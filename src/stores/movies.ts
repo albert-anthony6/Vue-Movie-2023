@@ -1,9 +1,6 @@
 import { defineStore } from 'pinia';
 
-import axios from 'axios'
-
-axios.defaults.baseURL = 'https://api.themoviedb.org/3/';
-axios.defaults.headers.common['Authorization'] = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQ';
+import axios from 'axios';
 
 export default defineStore({
     id: 'movies',
@@ -14,7 +11,7 @@ export default defineStore({
     actions: {
         getMovies: () =>
             new Promise ((resolve, reject) => {
-                axios.get(`https://api.themoviedb.org/3/movie/popular/?api_key=${import.meta.env.VITE_API_KEY}`)
+                axios.get('/.netlify/functions/getMovies')
                     .then((resp) => {
                         resolve(resp)
                     })
