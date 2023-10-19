@@ -1,7 +1,6 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { Vue3Mq } from 'vue3-mq';
-
 // import { library } from '@fortawesome/fontawesome-svg-core'
 // import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 // import { faGithub, faLinkedinIn, faLeanpub } from '@fortawesome/free-brands-svg-icons'
@@ -11,6 +10,7 @@ import App from './App.vue'
 import router from './router'
 
 const app = createApp(App)
+
 
 app.use(Vue3Mq, {
     breakpoints: {
@@ -24,8 +24,8 @@ app.use(Vue3Mq, {
     }
 })
 
-app.use(createPinia())
-app.use(router)
+app.use(createPinia());
+app.use(router);
 
 // library.add(faCode, faEnvelope, faGithub, faLinkedinIn, faArrowRight, faArrowDownLong, faHourglassStart, faSearch, faLeanpub)
 
