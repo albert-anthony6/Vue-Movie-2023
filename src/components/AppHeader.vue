@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
 import { useMq } from "vue3-mq";
+import IconTMDBLogo from '@/assets/icons/icon_tmdb_logo.svg';
 
 const mq = useMq();
 
@@ -26,7 +27,7 @@ watch(
 <template>
     <header :class="isMenuOpen ? 'mobile-menu' : 'app-header'">
         <div class="header-content">
-            <font-awesome-icon class="fa-icon" icon="fa-solid fa-code" />
+            <IconTMDBLogo />
             <ul>
                 <li><a href="#home" @click="closeMenu">Home</a></li>
                 <li><a href="#projects" @click="closeMenu">Projects</a></li>
@@ -51,10 +52,7 @@ watch(
     background-color: rgba($darkest-neutral, 0.5);
     z-index: 998;
     backdrop-filter: blur(30px);
-    
-    @include bp-xxl-desktop-large {
-        padding: 25px 40px;
-    }
+    padding: 15px 40px;
 
     .header-content,
     ul {
@@ -64,22 +62,17 @@ watch(
     }
 
     .header-content {
-        width: 80%;
+        width: 90%;
         max-width: 1400px;
-        padding: 25px 0;
         margin: 0 auto;
-        
-        @include bp-lg-laptop {
-            width: 90%;
-        }
-
-        @include bp-custom-min(1360) {
-            width: 80%;
-        }
 
         @include bp-xxl-desktop-large {
             width: 100%;
             padding: unset;
+        }
+
+        svg {
+            width: 100px;
         }
 
         ul {
