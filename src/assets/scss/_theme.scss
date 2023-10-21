@@ -65,3 +65,32 @@ button {
 .fa-icon {
     font-size: rem(30);
 }
+
+// Carousel pagination & navigation styles
+button.carousel__next,
+button.carousel__prev {
+    height: 50%;
+    width: 50px;
+    margin-right: 0;
+    transition: all 0.2s ease;
+    
+    &:hover {
+        background-color: rgba($darkest-neutral, 0.5);
+
+        svg {
+            transition: all 0.2s ease;
+            transform: scale(1.7);
+        }
+    }
+
+    svg {
+        fill: $lightest-neutral;
+        transform: scale(1.5);
+    }
+}
+
+.carousel__pagination {
+    &-item button::after {
+        background-color: $light-grey;
+    }
+}

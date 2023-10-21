@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { Carousel, Slide } from 'vue3-carousel';
+import { Carousel, Slide, Navigation, Pagination, } from 'vue3-carousel';
 import 'vue3-carousel/dist/carousel.css'
 import useMoviesStore from '@/stores/movies';
 import type Movie from '@/utils/movie';
@@ -89,6 +89,12 @@ getMovies('top_rated', 'topRated');
           <img :src="baseImgUrl + posterSize + movies.upcoming[slide].poster_path" class="carousel__item" />
           <p class="category-tag">Upcoming</p>
         </Slide>
+
+        <template #addons>
+          <Navigation />
+          <Pagination />
+          <p class="view-all">View All</p>
+        </template>
       </Carousel>
     </div>
     <div v-if="movies.popular" class="popular">
@@ -97,6 +103,12 @@ getMovies('top_rated', 'topRated');
           <img :src="baseImgUrl + posterSize + movies.popular[slide].poster_path" class="carousel__item" />
           <p class="category-tag">Popular</p>
         </Slide>
+
+        <template #addons>
+          <Navigation />
+          <Pagination />
+          <p class="view-all">View All</p>
+        </template>
       </Carousel>
     </div>
     <div v-if="movies.topRated" class="top-rated">
@@ -105,6 +117,12 @@ getMovies('top_rated', 'topRated');
           <img :src="baseImgUrl + posterSize + movies.topRated[slide].poster_path" class="carousel__item" />
           <p class="category-tag">Top Rated</p>
         </Slide>
+
+        <template #addons>
+          <Navigation />
+          <Pagination />
+          <p class="view-all">View All</p>
+        </template>
       </Carousel>
     </div>
   </div>
@@ -193,6 +211,14 @@ getMovies('top_rated', 'topRated');
   .popular,
   .top-rated {
     margin-top: 50px;
+
+    .view-all {
+      font-size: rem(20);
+      position: absolute;
+      top: 0;
+      right: 25px;
+      cursor: pointer;
+    }
   }
 
   .posters {
@@ -206,7 +232,6 @@ getMovies('top_rated', 'topRated');
 
     .category-tag {
       bottom: 5px;
-      /* left: 0px; */
     }
 
     .carousel__slide {
