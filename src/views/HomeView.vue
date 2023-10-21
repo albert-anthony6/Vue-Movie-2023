@@ -1,10 +1,12 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
+import { RouterLink } from 'vue-router';
 import { Carousel, Slide, Navigation, Pagination, } from 'vue3-carousel';
 import 'vue3-carousel/dist/carousel.css'
 import useMoviesStore from '@/stores/movies';
 import type Movie from '@/utils/movie';
 
+const baseImgUrl = 'http://image.tmdb.org/t/p/';
 const posterSize = 'w500';
 const backdropSize = 'w1280';
 
@@ -39,7 +41,7 @@ const movies = ref< {[key: string]: Movie[] }>({});
 async function getMovies(category: string, keyName?: string) {
   await moviesStore.getMovies(category)
     .then((resp) => {
-      movies.value[keyName || category] = resp;
+      movies.value[keyName || category] = resp.results;
     })
     .catch((err) => {
       console.error(err);
@@ -84,42 +86,51 @@ getMovies('top_rated', 'topRated');
     <div v-if="movies.upcoming" class="upcoming">
       <Carousel class="posters" :itemsToShow="8.95" :autoplay="5000" :wrapAround="true" :transition="500">
         <Slide v-for="slide in 10" :key="slide">
-          <img :src="`http://image.tmdb.org/t/p/${posterSize}${movies.upcoming[slide].poster_path}`" class="carousel__item" />
+          <img :src="`${baseImgUrl}${posterSize}${movies.upcoming[slide].poster_path}`" class="carousel__item" />
           <p class="category-tag">Upcoming</p>
         </Slide>
 
         <template #addons>
           <Navigation />
           <Pagination />
-          <p class="view-all">View All <font-awesome-icon class="fa-icon" icon="fa-solid fa-arrow-right" /></p>
+          <RouterLink
+            to="/category/upcoming"
+            class="view-all">View All <font-awesome-icon class="fa-icon" icon="fa-solid fa-arrow-right" />
+          </RouterLink>
         </template>
       </Carousel>
     </div>
     <div v-if="movies.popular" class="popular">
       <Carousel class="posters" :itemsToShow="8.95" :autoplay="5000" :wrapAround="true" :transition="500" dir="rtl">
         <Slide v-for="slide in 10" :key="slide">
-          <img :src="`http://image.tmdb.org/t/p/${posterSize}${movies.popular[slide].poster_path}`" class="carousel__item" />
+          <img :src="`${baseImgUrl}${posterSize}${movies.popular[slide].poster_path}`" class="carousel__item" />
           <p class="category-tag">Popular</p>
         </Slide>
 
         <template #addons>
           <Navigation />
           <Pagination />
-          <p class="view-all"><font-awesome-icon class="fa-icon" icon="fa-solid fa-arrow-right" /> View All</p>
+          <RouterLink
+            to="/category/popular"
+            class="view-all"><font-awesome-icon class="fa-icon" icon="fa-solid fa-arrow-right" /> View All
+          </RouterLink>
         </template>
       </Carousel>
     </div>
     <div v-if="movies.topRated" class="top-rated">
       <Carousel class="posters" :itemsToShow="8.95" :autoplay="5000" :wrapAround="true" :transition="500">
         <Slide v-for="slide in 10" :key="slide">
-          <img :src="`http://image.tmdb.org/t/p/${posterSize}${movies.topRated[slide].poster_path}`" class="carousel__item" />
+          <img :src="`${baseImgUrl}${posterSize}${movies.topRated[slide].poster_path}`" class="carousel__item" />
           <p class="category-tag">Top Rated</p>
         </Slide>
 
         <template #addons>
           <Navigation />
           <Pagination />
-          <p class="view-all">View All <font-awesome-icon class="fa-icon" icon="fa-solid fa-arrow-right" /></p>
+          <RouterLink
+            to="/category/top_rated"
+            class="view-all">View All <font-awesome-icon class="fa-icon" icon="fa-solid fa-arrow-right" />
+          </RouterLink>
         </template>
       </Carousel>
     </div>

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
 import { useMq } from "vue3-mq";
+import { RouterLink } from 'vue-router';
 import IconTMDBLogo from '@/assets/icons/icon_tmdb_logo.svg';
 
 const mq = useMq();
@@ -27,14 +28,13 @@ watch(
 <template>
     <header :class="isMenuOpen ? 'mobile-menu' : 'app-header'">
         <div class="header-content">
-            <IconTMDBLogo />
+            <RouterLink to="/" class="logo">
+                <IconTMDBLogo />
+            </RouterLink>
             <ul>
                 <li><a href="#home" @click="closeMenu">Home</a></li>
-                <li><a href="#projects" @click="closeMenu">Projects</a></li>
-                <li><a href="#skills" @click="closeMenu">Skills</a></li>
-                <li><a href="#why-me" @click="closeMenu">About</a></li>
-                <li><a href="#work" @click="closeMenu">Work Experience</a></li>
-                <li><a href="https://google.com" @click="closeMenu">Resume</a></li>
+                <li><a href="#projects" @click="closeMenu">Movies</a></li>
+                <li><a href="#projects" @click="closeMenu">TV Shows</a></li>
             </ul>
             <div class="menu-icon" @click="isMenuOpen = !isMenuOpen" :class="{'menu-active': isMenuOpen}">
                 <span></span>
@@ -52,7 +52,7 @@ watch(
     background-color: rgba($darkest-neutral, 0.5);
     z-index: 998;
     backdrop-filter: blur(30px);
-    padding: 15px 40px;
+    padding: 15px 40px 8px;
 
     .header-content,
     ul {

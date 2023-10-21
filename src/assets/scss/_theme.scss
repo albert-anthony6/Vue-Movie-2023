@@ -66,6 +66,30 @@ button {
     font-size: rem(20);
 }
 
+// Pagination styles
+.pagination {
+    justify-content: center;
+
+    li svg {
+        opacity: 0.5;
+        transform: scale(1.5);
+    }
+    
+    li button {
+        font-size: rem(16);
+        border: 1px solid transparent;
+    }
+
+    .Control-active {
+        opacity: 1;
+        fill: $lightest-neutral;
+
+        &:hover {
+            fill: $grey;
+        }
+    }
+}
+
 // Carousel pagination & navigation styles
 button.carousel__next,
 button.carousel__prev {

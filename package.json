@@ -16,6 +16,7 @@
     "@fortawesome/fontawesome-svg-core": "^6.4.2",
     "@fortawesome/free-solid-svg-icons": "^6.4.2",
     "@fortawesome/vue-fontawesome": "^3.0.3",
+    "@hennge/vue3-pagination": "^1.0.17",
     "@netlify/functions": "^2.3.0",
     "axios": "^1.5.1",
     "pinia": "^2.1.6",
