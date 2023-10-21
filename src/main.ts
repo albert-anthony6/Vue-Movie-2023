@@ -1,10 +1,9 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { Vue3Mq } from 'vue3-mq';
-// import { library } from '@fortawesome/fontawesome-svg-core'
-// import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-// import { faGithub, faLinkedinIn, faLeanpub } from '@fortawesome/free-brands-svg-icons'
-// import { faCode, faEnvelope, faArrowRight, faArrowDownLong, faHourglassStart, faSearch } from '@fortawesome/free-solid-svg-icons'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { faArrowRight, faSearch } from '@fortawesome/free-solid-svg-icons'
 
 import App from './App.vue'
 import router from './router'
@@ -27,6 +26,6 @@ app.use(Vue3Mq, {
 app.use(createPinia());
 app.use(router);
 
-// library.add(faCode, faEnvelope, faGithub, faLinkedinIn, faArrowRight, faArrowDownLong, faHourglassStart, faSearch, faLeanpub)
+library.add(faArrowRight, faSearch)
 
-app.mount('#app')
+app.component('font-awesome-icon', FontAwesomeIcon).mount('#app')

@@ -5,7 +5,6 @@ import 'vue3-carousel/dist/carousel.css'
 import useMoviesStore from '@/stores/movies';
 import type Movie from '@/utils/movie';
 
-const baseImgUrl = import.meta.env.VITE_BASE_IMG_URL;
 const posterSize = 'w500';
 const backdropSize = 'w1280';
 
@@ -36,7 +35,6 @@ const thumbnailBreakpoints = {
 
 const moviesStore = useMoviesStore();
 const movies = ref< {[key: string]: Movie[] }>({});
-// const popularMovies = ref<Movie[]>([]);
 
 async function getMovies(category: string, keyName?: string) {
   await moviesStore.getMovies(category)
@@ -67,7 +65,7 @@ getMovies('top_rated', 'topRated');
               </p>
               <button type="button">Info</button>
             </div>
-            <img :src="baseImgUrl + backdropSize + movies.nowPlaying[slide - 1].backdrop_path" class="main-carousel__item" />
+            <img :src="`http://image.tmdb.org/t/p/${backdropSize}${movies.nowPlaying[slide - 1].backdrop_path}`" class="main-carousel__item" />
           </Slide>
         </Carousel>
         <Carousel
@@ -79,49 +77,49 @@ getMovies('top_rated', 'topRated');
         >
         <Slide v-for="slide in movies.nowPlaying.length" :key="slide">
             <p class="category-tag">Now Playing</p>
-            <img :src="baseImgUrl + posterSize + movies.nowPlaying[slide - 1].backdrop_path" class="sub-carousel__item" @click="slideTo(slide - 1)" />
+            <img :src="`http://image.tmdb.org/t/p/${posterSize}${movies.nowPlaying[slide - 1].backdrop_path}`" class="sub-carousel__item" @click="slideTo(slide - 1)" />
           </Slide>
       </Carousel>
     </div>
     <div v-if="movies.upcoming" class="upcoming">
       <Carousel class="posters" :itemsToShow="8.95" :autoplay="5000" :wrapAround="true" :transition="500">
         <Slide v-for="slide in 10" :key="slide">
-          <img :src="baseImgUrl + posterSize + movies.upcoming[slide].poster_path" class="carousel__item" />
+          <img :src="`http://image.tmdb.org/t/p/${posterSize}${movies.upcoming[slide].poster_path}`" class="carousel__item" />
           <p class="category-tag">Upcoming</p>
         </Slide>
 
         <template #addons>
           <Navigation />
           <Pagination />
-          <p class="view-all">View All</p>
+          <p class="view-all">View All <font-awesome-icon class="fa-icon" icon="fa-solid fa-arrow-right" /></p>
         </template>
       </Carousel>
     </div>
     <div v-if="movies.popular" class="popular">
       <Carousel class="posters" :itemsToShow="8.95" :autoplay="5000" :wrapAround="true" :transition="500" dir="rtl">
         <Slide v-for="slide in 10" :key="slide">
-          <img :src="baseImgUrl + posterSize + movies.popular[slide].poster_path" class="carousel__item" />
+          <img :src="`http://image.tmdb.org/t/p/${posterSize}${movies.popular[slide].poster_path}`" class="carousel__item" />
           <p class="category-tag">Popular</p>
         </Slide>
 
         <template #addons>
           <Navigation />
           <Pagination />
-          <p class="view-all">View All</p>
+          <p class="view-all"><font-awesome-icon class="fa-icon" icon="fa-solid fa-arrow-right" /> View All</p>
         </template>
       </Carousel>
     </div>
     <div v-if="movies.topRated" class="top-rated">
       <Carousel class="posters" :itemsToShow="8.95" :autoplay="5000" :wrapAround="true" :transition="500">
         <Slide v-for="slide in 10" :key="slide">
-          <img :src="baseImgUrl + posterSize + movies.topRated[slide].poster_path" class="carousel__item" />
+          <img :src="`http://image.tmdb.org/t/p/${posterSize}${movies.topRated[slide].poster_path}`" class="carousel__item" />
           <p class="category-tag">Top Rated</p>
         </Slide>
 
         <template #addons>
           <Navigation />
           <Pagination />
-          <p class="view-all">View All</p>
+          <p class="view-all">View All <font-awesome-icon class="fa-icon" icon="fa-solid fa-arrow-right" /></p>
         </template>
       </Carousel>
     </div>
@@ -214,10 +212,19 @@ getMovies('top_rated', 'topRated');
 
     .view-all {
       font-size: rem(20);
+      font-weight: bold;
       position: absolute;
       top: 0;
       right: 25px;
       cursor: pointer;
+      text-transform: uppercase;
+      
+      &:hover {
+        svg {
+          transition: all 0.2s ease;
+          transform: translateX(5px);
+        }
+      }
     }
   }
 
