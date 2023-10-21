@@ -1,12 +1,12 @@
 import type { Context } from "@netlify/functions"
 import axios from 'axios'
 
-axios.defaults.baseURL = process.env.VITE_BASE_API_URL;
+axios.defaults.baseURL = 'https://api.themoviedb.org/3/';
 axios.defaults.headers.common['Authorization'] = process.env.VITE_API_AUTH_TOKEN;
 
-async function getMovies() {
+async function getMovies(category: string) {
   try {
-    const resp = await axios.get(`movie/popular/?api_key=${process.env.VITE_API_KEY}`);
+    const resp = await axios.get(`movie/${category}/?api_key=${process.env.VITE_API_KEY}`);
     return resp;
   } catch (err) {
     throw new Error(err.message);
@@ -14,9 +14,9 @@ async function getMovies() {
 }
 
 // Docs on event and context https://www.netlify.com/docs/functions/#the-handler-method
-exports.handler = async (req: Request, context: Context) => {
+exports.handler = async (event, context: Context) => {
     try {
-      const data = await getMovies();
+      const data = await getMovies(event.queryStringParameters.category);
   
       return {
         statusCode: 200,

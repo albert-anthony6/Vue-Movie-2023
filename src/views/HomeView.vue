@@ -3,9 +3,7 @@ import { ref } from 'vue';
 import { Carousel, Slide } from 'vue3-carousel';
 import 'vue3-carousel/dist/carousel.css'
 import useMoviesStore from '@/stores/movies';
-import type PopularMovie from '@/utils/popular-movie';
-
-const popularMovies = ref<PopularMovie[]>([]);
+import type Movie from '@/utils/movie';
 
 const baseImgUrl = import.meta.env.VITE_BASE_IMG_URL;
 const posterSize = 'w500';
@@ -37,41 +35,76 @@ const thumbnailBreakpoints = {
 }
 
 const moviesStore = useMoviesStore();
+const movies = ref< {[key: string]: Movie[] }>({});
+// const popularMovies = ref<Movie[]>([]);
 
-moviesStore.getMovies()
-  .then((resp) => {
-    popularMovies.value = resp;
-  })
-  .catch((err) => {
-    console.error(err);
-  })
+async function getMovies(category: string, keyName?: string) {
+  await moviesStore.getMovies(category)
+    .then((resp) => {
+      movies.value[keyName || category] = resp;
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+}
+
+// Getting all movie categories
+getMovies('now_playing', 'nowPlaying');
+getMovies('upcoming');
+getMovies('popular');
+getMovies('top_rated', 'topRated');
 </script>
 
 <template>
   <div class="home">
-    <div class="banner">
+    <div v-if="movies.nowPlaying" class="now-playing">
       <Carousel id="gallery" :items-to-show="1" :autoplay="5000" :wrap-around="true" v-model="currentSlide">
-          <Slide v-for="slide in popularMovies.length" :key="slide">
+          <Slide v-for="slide in movies.nowPlaying.length" :key="slide">
             <div class="details">
-              <h1 class="title">{{ popularMovies[slide - 1].title }}</h1>
+              <h1 class="title">{{ movies.nowPlaying[slide - 1].title }}</h1>
               <p class="overview">
-                {{ popularMovies[slide - 1].overview.slice(0, 303) }}<span v-if="popularMovies[slide - 1].overview.length > 303">...</span>
+                {{ movies.nowPlaying[slide - 1].overview.slice(0, 303) }}<span v-if="movies.nowPlaying[slide - 1].overview.length > 303">...</span>
               </p>
               <button type="button">Info</button>
             </div>
-            <img :src="baseImgUrl + backdropSize + popularMovies[slide - 1].backdrop_path" class="main-carousel__item" />
+            <img :src="baseImgUrl + backdropSize + movies.nowPlaying[slide - 1].backdrop_path" class="main-carousel__item" />
+          </Slide>
+        </Carousel>
+        <Carousel
+        id="thumbnails"
+        :breakpoints="thumbnailBreakpoints"
+        :wrap-around="true"
+        v-model="currentSlide"
+        ref="carousel"
+        >
+        <Slide v-for="slide in movies.nowPlaying.length" :key="slide">
+            <p class="category-tag">Now Playing</p>
+            <img :src="baseImgUrl + posterSize + movies.nowPlaying[slide - 1].backdrop_path" class="sub-carousel__item" @click="slideTo(slide - 1)" />
           </Slide>
       </Carousel>
-      <Carousel
-          id="thumbnails"
-          :breakpoints="thumbnailBreakpoints"
-          :wrap-around="true"
-          v-model="currentSlide"
-          ref="carousel"
-      >
-          <Slide v-for="slide in popularMovies.length" :key="slide">
-            <img :src="baseImgUrl + posterSize + popularMovies[slide - 1].backdrop_path" class="sub-carousel__item" @click="slideTo(slide - 1)" />
-          </Slide>
+    </div>
+    <div v-if="movies.upcoming" class="upcoming">
+      <Carousel class="posters" :itemsToShow="8.95" :autoplay="5000" :wrapAround="true" :transition="500">
+        <Slide v-for="slide in 10" :key="slide">
+          <img :src="baseImgUrl + posterSize + movies.upcoming[slide].poster_path" class="carousel__item" />
+          <p class="category-tag">Upcoming</p>
+        </Slide>
+      </Carousel>
+    </div>
+    <div v-if="movies.popular" class="popular">
+      <Carousel class="posters" :itemsToShow="8.95" :autoplay="5000" :wrapAround="true" :transition="500" dir="rtl">
+        <Slide v-for="slide in 10" :key="slide">
+          <img :src="baseImgUrl + posterSize + movies.popular[slide].poster_path" class="carousel__item" />
+          <p class="category-tag">Popular</p>
+        </Slide>
+      </Carousel>
+    </div>
+    <div v-if="movies.topRated" class="top-rated">
+      <Carousel class="posters" :itemsToShow="8.95" :autoplay="5000" :wrapAround="true" :transition="500">
+        <Slide v-for="slide in 10" :key="slide">
+          <img :src="baseImgUrl + posterSize + movies.topRated[slide].poster_path" class="carousel__item" />
+          <p class="category-tag">Top Rated</p>
+        </Slide>
       </Carousel>
     </div>
   </div>
@@ -80,14 +113,24 @@ moviesStore.getMovies()
 <style lang="scss" scoped>
 .home {
   margin-top: 80px;
+  padding-bottom: 50px;
 
   @include bp-sm-phone-landscape {
     margin-top: 50px;
   }
 
-  .banner {
+  .category-tag {
+    position: absolute;
+    bottom: 0;
+    left: -1.5px;
+    padding: 0 5px;
+    background-color: red;
+  }
+
+  .now-playing {
     #gallery {
       position: relative;
+
       .details {
         position: absolute;
         font-size: rem(8);
@@ -143,6 +186,67 @@ moviesStore.getMovies()
           width: 20vw;
         }
       }
+    }
+  }
+
+  .upcoming,
+  .popular,
+  .top-rated {
+    margin-top: 50px;
+  }
+
+  .posters {
+    position: relative;
+
+    img {
+        width: 11.17vw;
+        border-radius: 20px;
+        cursor: pointer;
+      }
+
+    .category-tag {
+      bottom: 5px;
+      /* left: 0px; */
+    }
+
+    .carousel__slide {
+      padding: 5px;
+    }
+
+    .carousel__viewport {
+      perspective: 2000px;
+    }
+
+    .carousel__track {
+      transform-style: preserve-3d;
+    }
+
+    .carousel__slide--sliding {
+      transition: 0.5s;
+    }
+
+    .carousel__slide {
+      opacity: 0.9;
+      transform: rotateY(-20deg) scale(0.8);
+    }
+
+    .carousel__slide--active ~ .carousel__slide {
+      transform: rotateY(20deg) scale(0.8);
+    }
+
+    .carousel__slide--prev {
+      opacity: 1;
+      transform: rotateY(-10deg) scale(0.85);
+    }
+
+    .carousel__slide--next {
+      opacity: 1;
+      transform: rotateY(10deg) scale(0.85);
+    }
+
+    .carousel__slide--active {
+      opacity: 1;
+      transform: rotateY(0);
     }
   }
 }

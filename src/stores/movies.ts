@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
-import type PopularMovie from '@/utils/popular-movie';
+import type Movie from '@/utils/movie';
 
 export default defineStore({
     id: 'movies',
@@ -9,9 +9,9 @@ export default defineStore({
     }),
     getters: {},
     actions: {
-        getMovies: (): Promise<PopularMovie[]> =>
+        getMovies: (category: string): Promise<Movie[]> =>
             new Promise ((resolve, reject) => {
-                axios.get('/.netlify/functions/getMovies')
+                axios.get(`/.netlify/functions/getMovies/?category=${category}`)
                     .then((resp) => {
                         resolve(resp.data.results)
                     })

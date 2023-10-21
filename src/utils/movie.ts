@@ -1,4 +1,4 @@
-export default interface PopularMovie {
+export default interface Movie {
     adult: Boolean;
     backdrop_path: string;
     id: Number;
