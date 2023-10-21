@@ -39,10 +39,21 @@ getMovies('1');
 
 <template>
     <div class="category-view">
-        <h1>{{ pageTitle.replace('_', ' ') }}</h1>
+        <div class="top-container">
+            <h1>{{ pageTitle.replace('_', ' ') }}</h1>
+            <v-pagination
+                v-if="pageCount > 1"
+                v-model="currentPage"
+                :pages="pageCount"
+                :range-size="3"
+                class="pagination"
+                @update:modelValue="handlePageUpdate"
+            />
+        </div>
         <div class="options">
             <div v-for="movie in movies" :key="movie.id.toString" class="movie">
-                <img :src="`${baseImgUrl}${posterSize}${movie.poster_path}`" :alt="movie.title" />
+                <img v-if="movie.poster_path" :src="`${baseImgUrl}${posterSize}${movie.poster_path}`" :alt="movie.title" />
+                <img v-else src="@/assets/images/default_poster.jpg" :alt="movie.title" class="default-img" />
             </div>
         </div>
         <v-pagination
@@ -60,17 +71,23 @@ getMovies('1');
 .category-view {
     padding: 150px 0 50px;
 
-    h1,
+    .top-container,
     .options {
         width: 80%;
         margin: 0 auto;
     }
 
-    h1 {
-        text-align: left;
-        text-transform: capitalize;
+    .top-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
         margin-bottom: 10px;
+
+        h1 {
+            text-transform: capitalize;
+        }
     }
+
 
     .options {
         display: flex;
@@ -80,10 +97,13 @@ getMovies('1');
 
         .movie {
             width: 18%;
+            margin-top: 15px;
             cursor: pointer;
 
             img {
                 width: 100%;
+                height: 100%;
+                object-fit: cover;
             }
         }
     }

@@ -32,7 +32,6 @@ watch(
                 <IconTMDBLogo />
             </RouterLink>
             <ul>
-                <li><a href="#home" @click="closeMenu">Home</a></li>
                 <li><a href="#projects" @click="closeMenu">Movies</a></li>
                 <li><a href="#projects" @click="closeMenu">TV Shows</a></li>
             </ul>
