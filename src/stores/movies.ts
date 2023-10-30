@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
-import type Movie from '@/utils/movie';
+import type { Movie, MovieDetails } from '@/utils/movie';
 
 interface MovieCategoryData {
     page: number;
@@ -19,6 +19,16 @@ export default defineStore({
         getMovies: (category: string, page = '1'): Promise<MovieCategoryData> =>
             new Promise ((resolve, reject) => {
                 axios.get(`/.netlify/functions/getMovies/?category=${category}&page=${page}`)
+                    .then((resp) => {
+                        resolve(resp.data)
+                    })
+                    .catch((error) => {
+                        reject(error)
+                    })
+        }),
+        getMovie: (id: string): Promise<MovieDetails> =>
+            new Promise ((resolve, reject) => {
+                axios.get(`/.netlify/functions/getMovie/?id=${id}`)
                     .then((resp) => {
                         resolve(resp.data)
                     })

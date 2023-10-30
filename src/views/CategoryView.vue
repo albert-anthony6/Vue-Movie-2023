@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, RouterLink } from 'vue-router';
 import vPagination from '@hennge/vue3-pagination';
 import '@hennge/vue3-pagination/dist/vue3-pagination.css';
 import useMoviesStore from '@/stores/movies';
-import type Movies from '@/utils/movie';
+import type { Movie } from '@/utils/movie';
 
 const route = useRoute();
 
@@ -12,8 +12,8 @@ const baseImgUrl = 'http://image.tmdb.org/t/p/';
 const posterSize = 'w500';
 const pageTitle = route.params.categoryName as string;
 
-function getMovies(page: string) {
-    moviesStore.getMovies(route.params.categoryName as string, page)
+async function getMovies(page: string) {
+    await moviesStore.getMovies(route.params.categoryName as string, page)
         .then((resp) => {
             // API states page requests must be 500 or less
             pageCount.value = resp.total_pages > 500 ? 500 : resp.total_pages;
@@ -24,7 +24,7 @@ function getMovies(page: string) {
         })
 }
 
-const movies = ref<Movies[]>([]);
+const movies = ref<Movie[]>([]);
 const pageCount = ref(0);
 const currentPage = ref(1);
 
@@ -51,9 +51,11 @@ getMovies('1');
             />
         </div>
         <div class="options">
-            <div v-for="movie in movies" :key="movie.id.toString" class="movie">
-                <img v-if="movie.poster_path" :src="`${baseImgUrl}${posterSize}${movie.poster_path}`" :alt="movie.title" />
-                <img v-else src="@/assets/images/default_poster.jpg" :alt="movie.title" class="default-img" />
+            <div v-for="movie in movies" :key="movie.id" class="movie">
+                <RouterLink :to="`/show/${movie.id}`">
+                    <img v-if="movie.poster_path" :src="`${baseImgUrl}${posterSize}${movie.poster_path}`" :alt="movie.title" />
+                    <img v-else src="@/assets/images/default_poster.jpg" :alt="movie.title" class="default-img" />
+                </RouterLink>
             </div>
         </div>
         <v-pagination
@@ -70,6 +72,10 @@ getMovies('1');
 <style lang="scss" scoped>
 .category-view {
     padding: 150px 0 50px;
+    background-image: url('@/assets/images/test.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 
     .top-container,
     .options {
@@ -92,13 +98,16 @@ getMovies('1');
     .options {
         display: flex;
         flex-wrap: wrap;
-        justify-content: space-between;
+        justify-content: center;
         margin-bottom: 30px;
 
         .movie {
             width: 18%;
             margin-top: 15px;
             cursor: pointer;
+
+            flex: 0 0 calc(18% - 1em);
+            margin: 1em 0 0 20px;
 
             img {
                 width: 100%;

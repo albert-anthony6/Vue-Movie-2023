@@ -4,7 +4,7 @@ import { RouterLink } from 'vue-router';
 import { Carousel, Slide, Navigation, Pagination, } from 'vue3-carousel';
 import 'vue3-carousel/dist/carousel.css'
 import useMoviesStore from '@/stores/movies';
-import type Movie from '@/utils/movie';
+import type { Movie } from '@/utils/movie';
 
 const baseImgUrl = 'http://image.tmdb.org/t/p/';
 const posterSize = 'w500';
@@ -65,10 +65,13 @@ getMovies('top_rated', 'topRated');
               <p class="overview">
                 {{ movies.nowPlaying[slide - 1].overview.slice(0, 303) }}<span v-if="movies.nowPlaying[slide - 1].overview.length > 303">...</span>
               </p>
-              <button type="button">Info</button>
+              <RouterLink :to="`/show/${movies.nowPlaying[slide - 1].id}`">
+                <button type="button">Info</button>
+              </RouterLink>
+              <button type="button">Play Trailer</button>
             </div>
             <img
-              v-if="movies.nowPlaying[slide -1].backdrop_path"
+              v-if="movies.nowPlaying[slide - 1].backdrop_path"
               :src="`http://image.tmdb.org/t/p/${backdropSize}${movies.nowPlaying[slide - 1].backdrop_path}`"
               :alt="movies.nowPlaying[slide - 1].title"
               class="main-carousel__item"
@@ -86,7 +89,7 @@ getMovies('top_rated', 'topRated');
         <Slide v-for="slide in movies.nowPlaying.length" :key="slide">
             <p class="category-tag">Now Playing</p>
             <img
-              v-if="movies.nowPlaying[slide -1].poster_path"
+              v-if="movies.nowPlaying[slide - 1].poster_path"
               :src="`http://image.tmdb.org/t/p/${posterSize}${movies.nowPlaying[slide - 1].backdrop_path}`"
               :alt="movies.nowPlaying[slide - 1].title"
               class="sub-carousel__item" @click="slideTo(slide - 1)"
@@ -98,13 +101,15 @@ getMovies('top_rated', 'topRated');
     <div v-if="movies.upcoming" class="upcoming">
       <Carousel class="posters" :itemsToShow="8.95" :autoplay="5000" :wrapAround="true" :transition="500">
         <Slide v-for="slide in 10" :key="slide">
-          <img
-            v-if="movies.upcoming[slide -1].poster_path"
-            :src="`${baseImgUrl}${posterSize}${movies.upcoming[slide].poster_path}`"
-            :alt="movies.upcoming[slide - 1].title"
-            class="carousel__item"
-          />
-          <img v-else src="@/assets/images/default_poster.jpg" :alt="movies.upcoming[slide - 1].title" class="default-img" />
+          <RouterLink :to="`/show/${movies.upcoming[slide].id}`">
+            <img
+              v-if="movies.upcoming[slide - 1].poster_path"
+              :src="`${baseImgUrl}${posterSize}${movies.upcoming[slide].poster_path}`"
+              :alt="movies.upcoming[slide - 1].title"
+              class="carousel__item"
+            />
+            <img v-else src="@/assets/images/default_poster.jpg" :alt="movies.upcoming[slide - 1].title" class="default-img" />
+          </RouterLink>
           <p class="category-tag">Upcoming</p>
         </Slide>
 
@@ -121,13 +126,15 @@ getMovies('top_rated', 'topRated');
     <div v-if="movies.popular" class="popular">
       <Carousel class="posters" :itemsToShow="8.95" :autoplay="5000" :wrapAround="true" :transition="500" dir="rtl">
         <Slide v-for="slide in 10" :key="slide">
-          <img
-            v-if="movies.popular[slide -1].poster_path"
-            :src="`${baseImgUrl}${posterSize}${movies.popular[slide].poster_path}`"
-            :alt="movies.popular[slide - 1].title"
-            class="carousel__item"
-          />
-          <img v-else src="@/assets/images/default_poster.jpg" :alt="movies.popular[slide - 1].title" class="default-img" />
+          <RouterLink :to="`/show/${movies.popular[slide].id}`">
+            <img
+              v-if="movies.popular[slide - 1].poster_path"
+              :src="`${baseImgUrl}${posterSize}${movies.popular[slide].poster_path}`"
+              :alt="movies.popular[slide - 1].title"
+              class="carousel__item"
+            />
+            <img v-else src="@/assets/images/default_poster.jpg" :alt="movies.popular[slide - 1].title" class="default-img" />
+          </RouterLink>
           <p class="category-tag">Popular</p>
         </Slide>
 
@@ -144,13 +151,15 @@ getMovies('top_rated', 'topRated');
     <div v-if="movies.topRated" class="top-rated">
       <Carousel class="posters" :itemsToShow="8.95" :autoplay="5000" :wrapAround="true" :transition="500">
         <Slide v-for="slide in 10" :key="slide">
-          <img
-            v-if="movies.topRated[slide -1].poster_path"
-            :src="`${baseImgUrl}${posterSize}${movies.topRated[slide].poster_path}`"
-            :alt="movies.topRated[slide - 1].title"
-            class="carousel__item"
-          />
-          <img v-else src="@/assets/images/default_poster.jpg" :alt="movies.topRated[slide - 1].title" class="default-img" />
+          <RouterLink :to="`/show/${movies.topRated[slide].id}`">
+            <img
+              v-if="movies.topRated[slide - 1].poster_path"
+              :src="`${baseImgUrl}${posterSize}${movies.topRated[slide].poster_path}`"
+              :alt="movies.topRated[slide - 1].title"
+              class="carousel__item"
+            />
+            <img v-else src="@/assets/images/default_poster.jpg" :alt="movies.topRated[slide - 1].title" class="default-img" />
+          </RouterLink>
           <p class="category-tag">Top Rated</p>
         </Slide>
 
@@ -204,6 +213,7 @@ getMovies('top_rated', 'topRated');
         transform: translateY(-60%);
         text-align: left;
         text-shadow: rgba($darkest-neutral, 0.7) 1px 0 5px;
+        background-color: rgba($darkest-neutral, 0.3);
         
         @include bp-custom-min(850) {
           font-size: rem(10);
