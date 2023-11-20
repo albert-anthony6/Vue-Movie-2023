@@ -11,6 +11,7 @@ const route = useRoute();
 const baseImgUrl = 'http://image.tmdb.org/t/p/';
 const posterSize = 'w500';
 const pageTitle = route.params.categoryName as string;
+const isLoading = ref(true);
 
 async function getMovies(page: string) {
     await moviesStore.getMovies(route.params.categoryName as string, page)
@@ -18,9 +19,11 @@ async function getMovies(page: string) {
             // API states page requests must be 500 or less
             pageCount.value = resp.total_pages > 500 ? 500 : resp.total_pages;
             movies.value = resp.results;
+            isLoading.value = false;
         })
         .catch((err) => {
             console.error(err);
+            isLoading.value = false;
         })
 }
 
@@ -39,8 +42,29 @@ getMovies('1');
 
 <template>
     <div class="category-view">
-        <div class="top-container">
-            <h1>{{ pageTitle.replace('_', ' ') }}</h1>
+        <div v-if="isLoading" class="loader-container">
+            <div class="loadbar" />
+        </div>
+        <template v-else>
+            <div class="top-container">
+                <h1>{{ pageTitle.replace('_', ' ') }}</h1>
+                <v-pagination
+                    v-if="pageCount > 1"
+                    v-model="currentPage"
+                    :pages="pageCount"
+                    :range-size="3"
+                    class="pagination"
+                    @update:modelValue="handlePageUpdate"
+                />
+            </div>
+            <div class="options">
+                <div v-for="movie in movies" :key="movie.id" class="movie">
+                    <RouterLink :to="`/show/${movie.id}`">
+                        <img v-if="movie.poster_path" :src="`${baseImgUrl}${posterSize}${movie.poster_path}`" :alt="movie.title" />
+                        <img v-else src="@/assets/images/default_poster.jpg" :alt="movie.title" class="default-img" />
+                    </RouterLink>
+                </div>
+            </div>
             <v-pagination
                 v-if="pageCount > 1"
                 v-model="currentPage"
@@ -49,23 +73,7 @@ getMovies('1');
                 class="pagination"
                 @update:modelValue="handlePageUpdate"
             />
-        </div>
-        <div class="options">
-            <div v-for="movie in movies" :key="movie.id" class="movie">
-                <RouterLink :to="`/show/${movie.id}`">
-                    <img v-if="movie.poster_path" :src="`${baseImgUrl}${posterSize}${movie.poster_path}`" :alt="movie.title" />
-                    <img v-else src="@/assets/images/default_poster.jpg" :alt="movie.title" class="default-img" />
-                </RouterLink>
-            </div>
-        </div>
-        <v-pagination
-            v-if="pageCount > 1"
-            v-model="currentPage"
-            :pages="pageCount"
-            :range-size="3"
-            class="pagination"
-            @update:modelValue="handlePageUpdate"
-        />
+        </template>
     </div>
 </template>
 
@@ -76,6 +84,7 @@ getMovies('1');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    min-height: 100vh;
 
     .top-container,
     .options {

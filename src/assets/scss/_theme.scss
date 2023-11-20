@@ -66,6 +66,33 @@ button {
     font-size: rem(20);
 }
 
+/* Loading State */
+.loader-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(153, 223, 62, 0.644);
+    width: 288px;
+    height: 288px;
+    border-radius: 50%;
+    z-index: 998;
+
+    .loadbar {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 50%;
+        height: 50%;
+        border: 8px solid rgb(255, 255, 255);
+        border-radius: 50%;
+        border-top-color: green;
+        animation: spin 1s ease-in-out infinite;
+        -webkit-animation: spin 1s ease-in-out infinite;
+    }
+}
+
 // Pagination styles
 .pagination {
     justify-content: center;

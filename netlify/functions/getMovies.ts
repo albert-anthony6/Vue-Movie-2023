@@ -6,7 +6,7 @@ axios.defaults.headers.common['Authorization'] = process.env.VITE_API_AUTH_TOKEN
 
 async function getMovies(category: string, page = '1') {
   try {
-    const resp = await axios.get(`movie/${category}/?api_key=${process.env.VITE_API_KEY}`, { params: { page } });
+    const resp = await axios.get(`movie/${category}?api_key=${process.env.VITE_API_KEY}`, { params: { page } });
     return resp;
   } catch (err) {
     throw new Error(err.message);

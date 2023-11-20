@@ -20,65 +20,74 @@ function NumToTime(num: string) {
 }
 
 const movie = ref<MovieDetails>({} as MovieDetails);
-
 const moviesStore = useMoviesStore();
+const isLoading = ref(true);
 
 moviesStore.getMovie(route.params.id as string)
     .then((resp) => {
         console.log(resp);
         movie.value = resp;
+        isLoading.value = false;
     })
     .catch((err) => {
         console.error(err);
+        isLoading.value = false;
     })
 </script>
 
 <template>
-    <div v-if="movie.actors?.cast.length" class="show-view">
-        <div class="banner">
-            <img class="backdrop" :src="`${baseImgUrl}${backdropSize}${movie.movieDetails.backdrop_path}`" :alt="movie.movieDetails.title" />
-            <div class="details">
-                <h1 class="title">{{ movie.movieDetails.title }}</h1>
-                <span class="year">{{ movie.movieDetails.release_date.split('-')[0] }}</span>
-                <span class="runtime">{{ NumToTime(movie.movieDetails.runtime.toString()) }}</span>
-                <span v-for="genre in movie.movieDetails.genres" :key="genre.id" class="genre">
-                    {{ genre.name }}
-                </span>
-                <p class="overview">
-                    {{ movie.movieDetails.overview }}
-                </p>
-                <div class="tags">
-                    <div v-if="movie.movieDetails.budget !== 0 && movie.movieDetails.revenue !== 0" class="tag-group-1">
-                        <p class="tag">Budget: ${{ new Intl.NumberFormat().format(movie.movieDetails.budget as number) }}</p>
-                        <p class="tag">Revenue: ${{ new Intl.NumberFormat().format(movie.movieDetails.revenue as number) }}</p>
+    <div class="show-view">
+            <div v-if="isLoading" class="loader-container">
+                <div class="loadbar" />
+            </div>
+            <template v-else>
+                <template v-if="movie.actors?.cast.length">
+                    <div class="banner">
+                        <img class="backdrop" :src="`${baseImgUrl}${backdropSize}${movie.movieDetails.backdrop_path}`" :alt="movie.movieDetails.title" />
+                        <div class="details">
+                            <h1 class="title">{{ movie.movieDetails.title }}</h1>
+                            <span class="year">{{ movie.movieDetails.release_date.split('-')[0] }}</span>
+                            <span class="runtime">{{ NumToTime(movie.movieDetails.runtime.toString()) }}</span>
+                            <span v-for="genre in movie.movieDetails.genres" :key="genre.id" class="genre">
+                                {{ genre.name }}
+                            </span>
+                            <p class="overview">
+                                {{ movie.movieDetails.overview }}
+                            </p>
+                            <div class="tags">
+                                <div v-if="movie.movieDetails.budget !== 0 && movie.movieDetails.revenue !== 0" class="tag-group-1">
+                                    <p class="tag">Budget: ${{ new Intl.NumberFormat().format(movie.movieDetails.budget as number) }}</p>
+                                    <p class="tag">Revenue: ${{ new Intl.NumberFormat().format(movie.movieDetails.revenue as number) }}</p>
+                                </div>
+                                <div class="tag-group-2">
+                                    <p class="tag">Status: {{ movie.movieDetails.status }}</p>
+                                    <p class="tag">Original Language: {{ movie.movieDetails.original_language.toUpperCase() }}</p>
+                                </div>
+                            </div>
+                            <p class="score">{{ Math.round((movie.movieDetails.vote_average as number + Number.EPSILON) * 100) / 100 }}</p>
+                        </div>
                     </div>
-                    <div class="tag-group-2">
-                        <p class="tag">Status: {{ movie.movieDetails.status }}</p>
-                        <p class="tag">Original Language: {{ movie.movieDetails.original_language.toUpperCase() }}</p>
+                    <div class="cast">
+                        <h2>Meet the Cast</h2>
+                        <div class="actors">
+                            <div v-for="actor in movie.actors.cast" :key="actor.id" class="actor-card">
+                                <img v-if="actor.profile_path" :src="baseImgUrl + posterSize + actor.profile_path" :alt="actor.name" />
+                                <img v-else src="@/assets/images/default_poster.jpg" :alt="actor.name" />
+                                <p v-if="actor.name">{{ actor.name }}</p>
+                                <p v-if="actor.character">Plays {{ actor.character }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+                <div v-else class="no-info">
+                    <div class="content">
+                        <p>Sorry!</p>
+                        <h2>No Info Available for:</h2>
+                        <h2>"{{ movie.movieDetails?.title }}"</h2>
                     </div>
                 </div>
-                <p class="score">{{ Math.round((movie.movieDetails.vote_average as number + Number.EPSILON) * 100) / 100 }}</p>
-            </div>
+            </template>
         </div>
-        <div class="cast">
-            <h2>Meet the Cast</h2>
-            <div class="actors">
-                <div v-for="actor in movie.actors.cast" :key="actor.id" class="actor-card">
-                    <img v-if="actor.profile_path" :src="baseImgUrl + posterSize + actor.profile_path" :alt="actor.name" />
-                    <img v-else src="@/assets/images/default_poster.jpg" :alt="actor.name" />
-                    <p>{{ actor.name }}</p>
-                    <p>Plays {{ actor.character }}</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div v-else class="no-info">
-        <div class="content">
-            <p>Sorry!</p>
-            <h2>No Info Available for:</h2>
-            <h2>"{{ movie.movieDetails?.title }}"</h2>
-        </div>
-    </div>
 </template>
 
 <style lang="scss" scoped>
@@ -88,6 +97,7 @@ moviesStore.getMovie(route.params.id as string)
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    min-height: 100vh;
 
     .banner {
         position: relative;

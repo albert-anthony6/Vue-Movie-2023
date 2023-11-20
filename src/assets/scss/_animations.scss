@@ -83,3 +83,16 @@
         transform: translateX(0%);
     }
 }
+
+// loading animation
+@-webkit-keyframes spin {
+	to { 
+        -webkit-transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+@keyframes spin {
+	to { 
+        -webkit-transform: translate(-50%, -50%) rotate(360deg);
+    }
+}

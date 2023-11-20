@@ -37,14 +37,17 @@ const thumbnailBreakpoints = {
 
 const moviesStore = useMoviesStore();
 const movies = ref< {[key: string]: Movie[] }>({});
+const isLoading = ref(true);
 
 async function getMovies(category: string, keyName?: string) {
   await moviesStore.getMovies(category)
     .then((resp) => {
       movies.value[keyName || category] = resp.results;
+      isLoading.value = false;
     })
     .catch((err) => {
       console.error(err);
+      isLoading.value = false;
     });
 }
 
@@ -57,6 +60,9 @@ getMovies('top_rated', 'topRated');
 
 <template>
   <div class="home">
+    <div v-if="isLoading" class="loader-container">
+      <div class="loadbar" />
+    </div>
     <div v-if="movies.nowPlaying" class="now-playing">
       <Carousel id="gallery" :items-to-show="1" :autoplay="5000" :wrap-around="true" v-model="currentSlide">
           <Slide v-for="slide in movies.nowPlaying.length" :key="slide">
@@ -233,6 +239,10 @@ getMovies('top_rated', 'topRated');
         button {
           font-size: em(22, 10);
           box-shadow: 0 0 10px rgba($darkest-neutral, 0.5);
+
+          &:not(:first-child) {
+            margin-left: 15px;
+          }
         }
       }
 
