@@ -1,4 +1,4 @@
-interface Movie {
+interface Show {
     backdrop_path: string;
     id: string;
     original_language: string;
@@ -8,7 +8,7 @@ interface Movie {
     title: string;
 }
 
-interface MovieDetails {
+interface ShowDetails {
     actors: {
         cast: [{
             character: string;
@@ -17,7 +17,7 @@ interface MovieDetails {
             id: string;
         }];
     },
-    movieDetails: {
+    showDetails: {
         adult: Boolean;
         backdrop_path: string;
         id: Number;
@@ -37,4 +37,4 @@ interface MovieDetails {
     }
 }
 
-export type { Movie, MovieDetails };
+export type { Show, ShowDetails };

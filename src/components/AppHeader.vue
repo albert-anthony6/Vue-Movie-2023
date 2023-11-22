@@ -1,8 +1,10 @@
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
 import { useMq } from "vue3-mq";
-import { RouterLink } from 'vue-router';
+import { RouterLink, useRoute } from 'vue-router';
 import IconTMDBLogo from '@/assets/icons/icon_tmdb_logo.svg';
+
+const route = useRoute();
 
 const mq = useMq();
 
@@ -32,8 +34,24 @@ watch(
                 <IconTMDBLogo />
             </RouterLink>
             <ul>
-                <li><a href="#projects" @click="closeMenu">Movies</a></li>
-                <li><a href="#projects" @click="closeMenu">TV Shows</a></li>
+                <li>
+                    <a
+                        :href="route.name !== 'show' ? `${route.path}?type=movies` : '/?type=movies'"
+                        @click="closeMenu"
+                        :class="{ active: route.query.type === 'movies' }"
+                    >
+                        Movies
+                    </a>
+                </li>
+                <li>
+                    <a
+                        :href="route.name !== 'show' ? `${route.path}?type=tv` : '/?type=tv'"
+                        @click="closeMenu"
+                        :class="{ active: route.query.type === 'tv' }"
+                    >
+                        TV Shows
+                    </a>
+                </li>
             </ul>
             <div class="menu-icon" @click="isMenuOpen = !isMenuOpen" :class="{'menu-active': isMenuOpen}">
                 <span></span>
@@ -93,6 +111,11 @@ watch(
                     color: #ff70e0;
                 }
             }
+        }
+
+        .active {
+            color: #ff70e0;
+            pointer-events: none;
         }
     }
 }

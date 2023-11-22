@@ -3,8 +3,8 @@ import { ref } from 'vue';
 import { useRoute, RouterLink } from 'vue-router';
 import vPagination from '@hennge/vue3-pagination';
 import '@hennge/vue3-pagination/dist/vue3-pagination.css';
-import useMoviesStore from '@/stores/movies';
-import type { Movie } from '@/utils/movie';
+import useShowsStore from '@/stores/shows';
+import type { Show } from '@/utils/show';
 
 const route = useRoute();
 
@@ -13,31 +13,35 @@ const posterSize = 'w500';
 const pageTitle = route.params.categoryName as string;
 const isLoading = ref(true);
 
-async function getMovies(page: string) {
-    await moviesStore.getMovies(route.params.categoryName as string, page)
+async function getShows(page: string) {
+    let showType = 'movie';
+    if (route.query.type === 'tv') {
+        showType = 'tv';
+    }
+    await showsStore.getShows(showType, route.params.categoryName as string, page)
         .then((resp) => {
             // API states page requests must be 500 or less
             pageCount.value = resp.total_pages > 500 ? 500 : resp.total_pages;
-            movies.value = resp.results;
+            shows.value = resp.results;
             isLoading.value = false;
         })
         .catch((err) => {
             console.error(err);
-            isLoading.value = false;
+            isLoading.value = false; 
         })
 }
 
-const movies = ref<Movie[]>([]);
+const shows = ref<Show[]>([]);
 const pageCount = ref(0);
 const currentPage = ref(1);
 
 function handlePageUpdate(val: any) {
     currentPage.value = val;
-    getMovies(val);
+    getShows(val);
 }
 
-const moviesStore = useMoviesStore();
-getMovies('1');
+const showsStore = useShowsStore();
+getShows('1');
 </script>
 
 <template>
@@ -58,10 +62,10 @@ getMovies('1');
                 />
             </div>
             <div class="options">
-                <div v-for="movie in movies" :key="movie.id" class="movie">
-                    <RouterLink :to="`/show/${movie.id}`">
-                        <img v-if="movie.poster_path" :src="`${baseImgUrl}${posterSize}${movie.poster_path}`" :alt="movie.title" />
-                        <img v-else src="@/assets/images/default_poster.jpg" :alt="movie.title" class="default-img" />
+                <div v-for="show in shows" :key="show.id" class="show">
+                    <RouterLink :to="`/show/${show.id}`">
+                        <img v-if="show.poster_path" :src="`${baseImgUrl}${posterSize}${show.poster_path}`" :alt="show.title" />
+                        <img v-else src="@/assets/images/default_poster.jpg" :alt="show.title" class="default-img" />
                     </RouterLink>
                 </div>
             </div>
@@ -110,7 +114,7 @@ getMovies('1');
         justify-content: center;
         margin-bottom: 30px;
 
-        .movie {
+        .show {
             width: 18%;
             margin-top: 15px;
             cursor: pointer;

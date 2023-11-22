@@ -4,9 +4,14 @@ import axios from 'axios'
 axios.defaults.baseURL = 'https://api.themoviedb.org/3/';
 axios.defaults.headers.common['Authorization'] = process.env.VITE_API_AUTH_TOKEN;
 
-async function getMovies(category: string, page = '1') {
+async function getShows(showType: string, category: string, page = '1') {
   try {
-    const resp = await axios.get(`movie/${category}?api_key=${process.env.VITE_API_KEY}`, { params: { page } });
+    let formattedCategory = category;
+
+    if (showType === 'tv' && category === 'upcoming') {
+      formattedCategory = 'airing_today';
+    }
+    const resp = await axios.get(`${showType}/${formattedCategory}?api_key=${process.env.VITE_API_KEY}`, { params: { page } });
     return resp;
   } catch (err) {
     throw new Error(err.message);
@@ -16,7 +21,8 @@ async function getMovies(category: string, page = '1') {
 // Docs on event and context https://www.netlify.com/docs/functions/#the-handler-method
 exports.handler = async (event, context: Context) => {
     try {
-      const data = await getMovies(event.queryStringParameters.category, event.queryStringParameters.page);
+      const param = event.queryStringParameters;
+      const data = await getShows(param.showType, param.category, param.page);
   
       return {
         statusCode: 200,

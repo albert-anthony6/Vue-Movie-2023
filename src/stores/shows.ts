@@ -1,24 +1,24 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
-import type { Movie, MovieDetails } from '@/utils/movie';
+import type { Show, ShowDetails } from '@/utils/show';
 
-interface MovieCategoryData {
+interface ShowCategoryData {
     page: number;
-    results: Movie[];
+    results: Show[];
     total_pages: number;
     total_results: number;
 }
 
 export default defineStore({
-    id: 'movies',
+    id: 'shows',
     state: () => ({
-        movies: [],
+        shows: [],
     }),
     getters: {},
     actions: {
-        getMovies: (category: string, page = '1'): Promise<MovieCategoryData> =>
+        getShows: (showType: string, category: string, page = '1'): Promise<ShowCategoryData> =>
             new Promise ((resolve, reject) => {
-                axios.get(`/.netlify/functions/getMovies/?category=${category}&page=${page}`)
+                axios.get(`/.netlify/functions/getShows/?showType=${showType}&category=${category}&page=${page}`)
                     .then((resp) => {
                         resolve(resp.data)
                     })
@@ -26,9 +26,9 @@ export default defineStore({
                         reject(error)
                     })
         }),
-        getMovie: (id: string): Promise<MovieDetails> =>
+        getShow: (id: string): Promise<ShowDetails> =>
             new Promise ((resolve, reject) => {
-                axios.get(`/.netlify/functions/getMovie/?id=${id}`)
+                axios.get(`/.netlify/functions/getShow/?id=${id}`)
                     .then((resp) => {
                         resolve(resp.data)
                     })
