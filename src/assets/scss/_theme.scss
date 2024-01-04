@@ -96,13 +96,14 @@ button {
 // Pagination styles
 .pagination {
     justify-content: center;
-
+    
     li svg {
         opacity: 0.5;
         transform: scale(1.5);
     }
     
     li button {
+        color: $lightest-neutral;
         font-size: rem(16);
         border: 1px solid transparent;
     }

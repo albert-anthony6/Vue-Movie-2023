@@ -115,7 +115,6 @@ watch(
 
         .active {
             color: #ff70e0;
-            pointer-events: none;
         }
     }
 }

@@ -20,7 +20,7 @@ interface ShowDetails {
     showDetails: {
         adult: Boolean;
         backdrop_path: string;
-        id: Number;
+        id: string;
         budget: Number;
         homepage: string;
         genres: [{ id: string; name: string }];
@@ -30,6 +30,7 @@ interface ShowDetails {
         poster_path: string;
         release_date: string;
         title: string;
+        name: string;
         revenue: Number;
         runtime: Number;
         status: Number;

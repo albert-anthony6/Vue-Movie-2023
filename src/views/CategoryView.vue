@@ -63,7 +63,7 @@ getShows('1');
             </div>
             <div class="options">
                 <div v-for="show in shows" :key="show.id" class="show">
-                    <RouterLink :to="`/show/${show.id}`">
+                    <RouterLink :to="`/show/${show.id}/?type=${route.query.type || 'movies'}`">
                         <img v-if="show.poster_path" :src="`${baseImgUrl}${posterSize}${show.poster_path}`" :alt="show.title" />
                         <img v-else src="@/assets/images/default_poster.jpg" :alt="show.title" class="default-img" />
                     </RouterLink>

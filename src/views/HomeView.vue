@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import { RouterLink, useRoute } from 'vue-router';
 import { Carousel, Slide, Navigation, Pagination, } from 'vue3-carousel';
+import VideoModal from '@/components/VideoModal.vue';
 import 'vue3-carousel/dist/carousel.css'
 import useShowsStore from '@/stores/shows';
 import type { Show } from '@/utils/show';
@@ -37,16 +38,35 @@ const thumbnailBreakpoints = {
   },
 }
 
+const showType = ref('movie');
+const showTrailer = ref(false);
+const trailerKey = ref('');
+
+async function getVideos(id: string) {
+  isLoading.value = true;
+
+  await showsStore.getVideos(id)
+    .then((resp) => {
+        trailerKey.value = resp.key;
+        showTrailer.value = true;
+        isLoading.value = false;
+    })
+    .catch((err) => {
+        console.error(err);
+        showTrailer.value = false;
+        isLoading.value = false;
+    })
+}
+
 const showsStore = useShowsStore();
 const shows = ref< {[key: string]: Show[] }>({});
 const isLoading = ref(true);
 
-async function getShow(category: string, keyName?: string) {
-  let showType = 'movie';
+async function getShows(category: string, keyName?: string) {
   if (route.query.type === 'tv') {
-    showType = 'tv';
+    showType.value = 'tv';
   }
-  await showsStore.getShows(showType, category)
+  await showsStore.getShows(showType.value, category)
     .then((resp) => {
       shows.value[keyName || category] = resp.results;
       isLoading.value = false;
@@ -59,14 +79,14 @@ async function getShow(category: string, keyName?: string) {
 
 // Getting all show categories on page load
 if (route.query.type === 'tv') {
-  getShow('on_the_air', 'nowPlaying');
-  getShow('airing_today', 'upcoming');
+  getShows('on_the_air', 'nowPlaying');
+  getShows('airing_today', 'upcoming');
 } else {
-  getShow('now_playing', 'nowPlaying');
-  getShow('upcoming');
+  getShows('now_playing', 'nowPlaying');
+  getShows('upcoming');
 }
-getShow('popular');
-getShow('top_rated', 'topRated');
+getShows('popular');
+getShows('top_rated', 'topRated');
 </script>
 
 <template>
@@ -74,6 +94,12 @@ getShow('top_rated', 'topRated');
     <div v-if="isLoading" class="loader-container">
       <div class="loadbar" />
     </div>
+    <VideoModal 
+      v-if="showTrailer"
+      :showTrailer="showTrailer" 
+      :trailerKey="trailerKey" 
+      @toggle-modal="showTrailer = false"
+    />
     <div v-if="shows.nowPlaying" class="now-playing">
       <Carousel id="gallery" :items-to-show="1" :autoplay="5000" :wrap-around="true" v-model="currentSlide">
           <Slide v-for="slide in shows.nowPlaying.length" :key="slide">
@@ -82,10 +108,16 @@ getShow('top_rated', 'topRated');
               <p class="overview">
                 {{ shows.nowPlaying[slide - 1].overview.slice(0, 303) }}<span v-if="shows.nowPlaying[slide - 1].overview.length > 303">...</span>
               </p>
-              <RouterLink :to="`/show/${shows.nowPlaying[slide - 1].id}`">
+              <RouterLink :to="`/show/${shows.nowPlaying[slide - 1].id}/?type=${route.query.type || 'movies'}`">
                 <button type="button">Info</button>
               </RouterLink>
-              <button type="button">Play Trailer</button>
+              <button
+                v-if="route.query.type !== 'tv'" 
+                @click="getVideos(shows.nowPlaying[slide - 1].id)" 
+                type="button"
+              >
+                Play Trailer
+              </button>
             </div>
             <img
               v-if="shows.nowPlaying[slide - 1].backdrop_path"
@@ -120,7 +152,7 @@ getShow('top_rated', 'topRated');
     <div v-if="shows.upcoming" class="upcoming">
       <Carousel class="posters" :itemsToShow="8.95" :autoplay="5000" :wrapAround="true" :transition="500">
         <Slide v-for="slide in 10" :key="slide">
-          <RouterLink :to="`/show/${shows.upcoming[slide].id}`">
+          <RouterLink :to="`/show/${shows.upcoming[slide].id}/?type=${route.query.type || 'movies'}`">
             <img
               v-if="shows.upcoming[slide - 1].poster_path"
               :src="`${baseImgUrl}${posterSize}${shows.upcoming[slide].poster_path}`"
@@ -147,7 +179,7 @@ getShow('top_rated', 'topRated');
     <div v-if="shows.popular" class="popular">
       <Carousel class="posters" :itemsToShow="8.95" :autoplay="5000" :wrapAround="true" :transition="500" dir="rtl">
         <Slide v-for="slide in 10" :key="slide">
-          <RouterLink :to="`/show/${shows.popular[slide].id}`">
+          <RouterLink :to="`/show/${shows.popular[slide].id}/?type=${route.query.type || 'movies'}`">
             <img
               v-if="shows.popular[slide - 1].poster_path"
               :src="`${baseImgUrl}${posterSize}${shows.popular[slide].poster_path}`"
@@ -174,7 +206,7 @@ getShow('top_rated', 'topRated');
     <div v-if="shows.topRated" class="top-rated">
       <Carousel class="posters" :itemsToShow="8.95" :autoplay="5000" :wrapAround="true" :transition="500">
         <Slide v-for="slide in 10" :key="slide">
-          <RouterLink :to="`/show/${shows.topRated[slide].id}`">
+          <RouterLink :to="`/show/${shows.topRated[slide].id}/?type=${route.query.type || 'movies'}`">
             <img
               v-if="shows.topRated[slide - 1].poster_path"
               :src="`${baseImgUrl}${posterSize}${shows.topRated[slide].poster_path}`"
@@ -190,7 +222,7 @@ getShow('top_rated', 'topRated');
           <Navigation />
           <Pagination />
           <RouterLink
-            :to="`/category/top_rated/?type=${route.query.type || 'movies'}`"
+            :to="`/category/top_rated/?type=${route.query.type || 'movies'}/?type=${route.query.type || 'movies'}`"
             class="view-all">View All <font-awesome-icon class="fa-icon" icon="fa-solid fa-arrow-right" />
           </RouterLink>
         </template>
@@ -201,6 +233,7 @@ getShow('top_rated', 'topRated');
 
 <style lang="scss" scoped>
 .home {
+  position: relative;
   margin-top: 80px;
   padding-bottom: 50px;
 

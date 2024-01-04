@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 import { useRoute } from 'vue-router';
+import VideoModal from '@/components/VideoModal.vue';
 import useShowsStore from '@/stores/shows';
 import type { ShowDetails } from '@/utils/show';
 
@@ -19,78 +20,115 @@ function NumToTime(num: string) {
   return `${hours}h ${minutes}m`;
 }
 
-const show = ref<ShowDetails>({} as ShowDetails);
-const showsStore = useShowsStore();
+const trailerKey = ref('');
+const showTrailer = ref(false);
 const isLoading = ref(true);
 
-showsStore.getShow(route.params.id as string)
+async function getVideos(id: string) {
+  isLoading.value = true;
+  await showsStore.getVideos(id)
     .then((resp) => {
-        console.log(resp);
-        show.value = resp;
+        trailerKey.value = resp.key;
+        showTrailer.value = true;
         isLoading.value = false;
     })
     .catch((err) => {
         console.error(err);
+        showTrailer.value = false;
         isLoading.value = false;
     })
+}
+
+const show = ref<ShowDetails>({} as ShowDetails);
+const showType = ref('movie');
+const showsStore = useShowsStore();
+
+async function getShow() {
+    if (route.query.type === 'tv') {
+        showType.value = 'tv';
+    }
+    await showsStore.getShow(showType.value, route.params.id as string)
+        .then((resp) => {
+            show.value = resp;
+            isLoading.value = false;
+        })
+        .catch((err) => {
+            console.error(err);
+            isLoading.value = false;
+        })
+}
+
+getShow();
 </script>
 
 <template>
     <div class="show-view">
-            <div v-if="isLoading" class="loader-container">
-                <div class="loadbar" />
+        <div v-if="isLoading" class="loader-container">
+            <div class="loadbar" />
+        </div>
+        <template v-if="show.actors?.cast.length">
+            <VideoModal 
+                v-if="showTrailer"
+                :showTrailer="showTrailer" 
+                :trailerKey="trailerKey" 
+                @toggle-modal="showTrailer = false"
+            />
+            <div class="banner">
+                <img class="backdrop" :src="`${baseImgUrl}${backdropSize}${show.showDetails.backdrop_path}`" :alt="show.showDetails.title" />
+                <div class="details">
+                    <h1 class="title">{{ show.showDetails.title || show.showDetails.name }}</h1>
+                    <span v-if="show.showDetails.release_date" class="year">{{ show.showDetails.release_date.split('-')[0] }}</span>
+                    <span v-if="show.showDetails.runtime" class="runtime">{{ NumToTime(show.showDetails.runtime.toString()) }}</span>
+                    <span v-for="genre in show.showDetails.genres" :key="genre.id" class="genre">
+                        {{ genre.name }}
+                    </span>
+                    <p v-if="show.showDetails.overview" class="overview">
+                        {{ show.showDetails.overview }}
+                    </p>
+                    <div class="tags">
+                        <div v-if="show.showDetails.budget && show.showDetails.revenue" class="tag-group-1">
+                            <p class="tag">Budget: ${{ new Intl.NumberFormat().format(show.showDetails.budget as number) }}</p>
+                            <p class="tag">Revenue: ${{ new Intl.NumberFormat().format(show.showDetails.revenue as number) }}</p>
+                        </div>
+                        <div v-if="show.showDetails.status && show.showDetails.original_language" class="tag-group-2">
+                            <p class="tag">Status: {{ show.showDetails.status }}</p>
+                            <p class="tag">Original Language: {{ show.showDetails.original_language.toUpperCase() }}</p>
+                        </div>
+                    </div>
+                    <p v-if="show.showDetails.vote_average" class="score">{{ Math.round((show.showDetails.vote_average as number + Number.EPSILON) * 100) / 100 }}</p>
+                    <button
+                        v-if="route.query.type !== 'tv'"
+                        @click="getVideos(show.showDetails.id)"
+                        type="button"
+                        class="play-trailer"
+                    >
+                        Play Trailer
+                    </button>
+                </div>
             </div>
-            <template v-else>
-                <template v-if="show.actors?.cast.length">
-                    <div class="banner">
-                        <img class="backdrop" :src="`${baseImgUrl}${backdropSize}${show.showDetails.backdrop_path}`" :alt="show.showDetails.title" />
-                        <div class="details">
-                            <h1 class="title">{{ show.showDetails.title }}</h1>
-                            <span class="year">{{ show.showDetails.release_date.split('-')[0] }}</span>
-                            <span class="runtime">{{ NumToTime(show.showDetails.runtime.toString()) }}</span>
-                            <span v-for="genre in show.showDetails.genres" :key="genre.id" class="genre">
-                                {{ genre.name }}
-                            </span>
-                            <p class="overview">
-                                {{ show.showDetails.overview }}
-                            </p>
-                            <div class="tags">
-                                <div v-if="show.showDetails.budget !== 0 && show.showDetails.revenue !== 0" class="tag-group-1">
-                                    <p class="tag">Budget: ${{ new Intl.NumberFormat().format(show.showDetails.budget as number) }}</p>
-                                    <p class="tag">Revenue: ${{ new Intl.NumberFormat().format(show.showDetails.revenue as number) }}</p>
-                                </div>
-                                <div class="tag-group-2">
-                                    <p class="tag">Status: {{ show.showDetails.status }}</p>
-                                    <p class="tag">Original Language: {{ show.showDetails.original_language.toUpperCase() }}</p>
-                                </div>
-                            </div>
-                            <p class="score">{{ Math.round((show.showDetails.vote_average as number + Number.EPSILON) * 100) / 100 }}</p>
-                        </div>
-                    </div>
-                    <div class="cast">
-                        <h2>Meet the Cast</h2>
-                        <div class="actors">
-                            <div v-for="actor in show.actors.cast" :key="actor.id" class="actor-card">
-                                <img v-if="actor.profile_path" :src="baseImgUrl + posterSize + actor.profile_path" :alt="actor.name" />
-                                <img v-else src="@/assets/images/default_poster.jpg" :alt="actor.name" />
-                                <p v-if="actor.name">{{ actor.name }}</p>
-                                <p v-if="actor.character">Plays {{ actor.character }}</p>
-                            </div>
-                        </div>
-                    </div>
-                </template>
-                <div v-else class="no-info">
-                    <div class="content">
-                        <p>Sorry!</p>
-                        <template v-if="show.showDetails?.title">
-                            <h2>No Info Available for: </h2>
-                            <h2>"{{ show.showDetails.title }}"</h2>
-                        </template>
-                        <h2 v-else>No Info Available for this show.</h2>
+            <div class="cast">
+                <h2>Meet the Cast</h2>
+                <div class="actors">
+                    <div v-for="actor in show.actors.cast" :key="actor.id" class="actor-card">
+                        <img v-if="actor.profile_path" :src="baseImgUrl + posterSize + actor.profile_path" :alt="actor.name" />
+                        <img v-else src="@/assets/images/default_poster.jpg" :alt="actor.name" />
+                        <p v-if="actor.name">{{ actor.name }}</p>
+                        <p v-if="actor.character">Plays {{ actor.character }}</p>
                     </div>
                 </div>
-            </template>
+            </div>
+        </template>
+        <div v-else-if="show.actors?.cast && !show.actors?.cast.length" class="no-info">
+            <div class="content">
+                <p>Sorry!</p>
+                <template v-if="show.showDetails?.title">
+                    <h2>No Info Available for: </h2>
+                    <h2>"{{ show.showDetails.title }}"</h2>
+                </template>
+                <h2 v-else>No Info Available for this show.</h2>
+            </div>
         </div>
+    </div>
 </template>
 
 <style lang="scss" scoped>
@@ -165,6 +203,10 @@ showsStore.getShow(route.params.id as string)
                 display: inline-block;
                 border-radius: 8px;
                 text-shadow: $darkest-neutral 1px 0 5px;
+            }
+
+            .play-trailer {
+                margin-left: 15px;
             }
 
             button {
