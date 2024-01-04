@@ -252,6 +252,7 @@ getShows('top_rated', 'topRated');
   .now-playing {
     #gallery {
       position: relative;
+      width: 100vw;
 
       .default-img {
           max-height: 100vh;

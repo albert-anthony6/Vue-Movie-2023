@@ -116,7 +116,12 @@ button {
             fill: $grey;
         }
     }
+    
+    .Page-active {
+        color: $darkest-neutral;
+    }
 }
+
 
 // Carousel pagination & navigation styles
 button.carousel__next,
