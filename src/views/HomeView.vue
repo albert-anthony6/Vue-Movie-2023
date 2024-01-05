@@ -38,6 +38,29 @@ const thumbnailBreakpoints = {
   },
 }
 
+const showBreakpoints = {
+  0: {
+    itemsToShow: 2,
+    snapAlign: 'center'
+  },
+  375: {
+    itemsToShow: 3,
+    snapAlign: 'center'
+  },
+  586: {
+    itemsToShow: 5,
+    snapAlign: 'center'
+  },
+  850: {
+    itemsToShow: 6,
+    snapAlign: 'center'
+  },
+  1200: {
+    itemsToShow: 9,
+    snapAlign: 'center'
+  },
+}
+
 const showType = ref('movie');
 const showTrailer = ref(false);
 const trailerKey = ref('');
@@ -129,11 +152,11 @@ getShows('top_rated', 'topRated');
           </Slide>
         </Carousel>
         <Carousel
-        id="thumbnails"
-        :breakpoints="thumbnailBreakpoints"
-        :wrap-around="true"
-        v-model="currentSlide"
-        ref="carousel"
+          id="thumbnails"
+          :breakpoints="thumbnailBreakpoints"
+          :wrap-around="true"
+          v-model="currentSlide"
+          ref="carousel"
         >
         <Slide v-for="slide in shows.nowPlaying.length" :key="slide">
             <p class="category-tag">Now Playing</p>
@@ -150,7 +173,14 @@ getShows('top_rated', 'topRated');
 
     <!-- Upcoming Shows -->
     <div v-if="shows.upcoming" class="upcoming">
-      <Carousel class="posters" :itemsToShow="8.95" :autoplay="5000" :wrapAround="true" :transition="500">
+      <Carousel
+        class="posters"
+        :itemsToShow="8.95" 
+        :autoplay="5000" 
+        :wrapAround="true" 
+        :transition="500"
+        :breakpoints="showBreakpoints"
+      >
         <Slide v-for="slide in 10" :key="slide">
           <RouterLink :to="`/show/${shows.upcoming[slide].id}/?type=${route.query.type || 'movies'}`">
             <img
@@ -177,7 +207,15 @@ getShows('top_rated', 'topRated');
 
     <!-- Popular Shows -->
     <div v-if="shows.popular" class="popular">
-      <Carousel class="posters" :itemsToShow="8.95" :autoplay="5000" :wrapAround="true" :transition="500" dir="rtl">
+      <Carousel 
+        class="posters" 
+        :itemsToShow="8.95"
+        :autoplay="5000"
+        :wrapAround="true"
+        :transition="500"
+        dir="rtl"
+        :breakpoints="showBreakpoints"
+      >
         <Slide v-for="slide in 10" :key="slide">
           <RouterLink :to="`/show/${shows.popular[slide].id}/?type=${route.query.type || 'movies'}`">
             <img
@@ -204,7 +242,14 @@ getShows('top_rated', 'topRated');
 
     <!-- Top Rated Shows -->
     <div v-if="shows.topRated" class="top-rated">
-      <Carousel class="posters" :itemsToShow="8.95" :autoplay="5000" :wrapAround="true" :transition="500">
+      <Carousel 
+        class="posters"
+        :itemsToShow="8.95"
+        :autoplay="5000"
+        :wrapAround="true"
+        :transition="500"
+        :breakpoints="showBreakpoints"
+      >
         <Slide v-for="slide in 10" :key="slide">
           <RouterLink :to="`/show/${shows.topRated[slide].id}/?type=${route.query.type || 'movies'}`">
             <img
@@ -255,16 +300,16 @@ getShows('top_rated', 'topRated');
       width: 100vw;
 
       .default-img {
-          max-height: 100vh;
+          height: 100vh;
           object-fit: cover;
       }
 
       .details {
         position: absolute;
-        font-size: rem(8);
+        font-size: rem(7);
         top: 60%;
         left: 5%;
-        max-width: 100%;
+        max-width: 80%;
         padding: 15px;
         border-radius: 8px;
         transform: translateY(-60%);
@@ -272,27 +317,54 @@ getShows('top_rated', 'topRated');
         text-shadow: rgba($darkest-neutral, 0.7) 1px 0 5px;
         background-color: rgba($darkest-neutral, 0.3);
         
-        @include bp-custom-min(850) {
+        @include bp-sm-phone-landscape {
+          font-size: rem(8);
+          width: 80%;
+        }
+        
+        @include bp-lg-laptop {
           font-size: rem(10);
-          max-width: 40%;
-          min-width: 500px;
+          width: 41.5%;
         }
 
         h1 {
           font-size: em(40, 10);
+          line-height: 1;
+          margin-bottom: 10px;
+          
+          @include bp-sm-phone-landscape {
+            line-height: 38.4px;
+            margin-bottom: 0;
+          }
         }
 
         .overview {
+          display: none;
           font-size: em(20, 10);
           margin-bottom: 10px;
+
+          @include bp-sm-phone-landscape{
+            display: block;
+          }
         }
 
         button {
           font-size: em(22, 10);
           box-shadow: 0 0 10px rgba($darkest-neutral, 0.5);
+          padding: 5px 10px;
+          border-radius: 3px;
+          
+          @include bp-sm-phone-landscape {
+            padding: 10px 20px;
+            border-radius: 8px;
+          }
 
           &:not(:first-child) {
-            margin-left: 15px;
+            margin-left: 10px;
+
+            @include bp-sm-phone-landscape {
+              margin-left: 15px;
+            }
           }
         }
       }
@@ -349,7 +421,7 @@ getShows('top_rated', 'topRated');
     position: relative;
 
     img {
-        width: 11.17vw;
+        width: 100%;
         border-radius: 20px;
         cursor: pointer;
       }

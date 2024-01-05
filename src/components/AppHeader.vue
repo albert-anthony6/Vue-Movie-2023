@@ -54,7 +54,7 @@ watch(
                 </li>
             </ul>
             <div class="menu-icon" @click="isMenuOpen = !isMenuOpen" :class="{'menu-active': isMenuOpen}">
-                <span></span>
+                <span />
             </div>
         </div>
     </header>
@@ -138,6 +138,12 @@ watch(
             font-size: rem(50);
         }
 
+        .logo {
+            display: inline-block;
+            width: 150px;
+            margin: 0 auto;
+        }
+
         .menu-icon {
             position: absolute;
             top: 40px;
@@ -187,7 +193,7 @@ watch(
     & span,
     & span::before,
     & span::after {
-        background-color: #f534cb; 
+        background-color: white; 
         content: '';
         position: absolute;
         width: 40px;
