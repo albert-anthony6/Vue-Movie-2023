@@ -106,6 +106,36 @@ getShow();
                     </button>
                 </div>
             </div>
+            <div class="mobile-details">
+                    <h1 class="title">{{ show.showDetails.title || show.showDetails.name }}</h1>
+                    <span v-if="show.showDetails.release_date" class="year">{{ show.showDetails.release_date.split('-')[0] }}</span>
+                    <span v-if="show.showDetails.runtime" class="runtime">{{ NumToTime(show.showDetails.runtime.toString()) }}</span>
+                    <span v-for="genre in show.showDetails.genres" :key="genre.id" class="genre">
+                        {{ genre.name }}
+                    </span>
+                    <p v-if="show.showDetails.overview" class="overview">
+                        {{ show.showDetails.overview }}
+                    </p>
+                    <div class="tags">
+                        <div v-if="show.showDetails.budget && show.showDetails.revenue" class="tag-group-1">
+                            <p class="tag">Budget: ${{ new Intl.NumberFormat().format(show.showDetails.budget as number) }}</p>
+                            <p class="tag">Revenue: ${{ new Intl.NumberFormat().format(show.showDetails.revenue as number) }}</p>
+                        </div>
+                        <div v-if="show.showDetails.status && show.showDetails.original_language" class="tag-group-2">
+                            <p class="tag">Status: {{ show.showDetails.status }}</p>
+                            <p class="tag">Original Language: {{ show.showDetails.original_language.toUpperCase() }}</p>
+                        </div>
+                    </div>
+                    <p v-if="show.showDetails.vote_average" class="score">{{ Math.round((show.showDetails.vote_average as number + Number.EPSILON) * 100) / 100 }}</p>
+                    <button
+                        v-if="route.query.type !== 'tv'"
+                        @click="getVideos(show.showDetails.id)"
+                        type="button"
+                        class="play-trailer"
+                    >
+                        Play Trailer
+                    </button>
+                </div>
             <div class="cast">
                 <h2>Meet the Cast</h2>
                 <div class="actors">
@@ -145,85 +175,200 @@ getShow();
         width: 100vw;
         height: 40vw;
         
-        .details {
-            position: absolute;
-            font-size: rem(8);
-            top: 60%;
-            left: 5%;
-            max-width: 100%;
-            padding: 15px;
-            border-radius: 8px;
-            transform: translateY(-60%);
-            text-align: left;
-            background-color: rgba($darkest-neutral, 0.3);
-            text-shadow: rgba($darkest-neutral, 0.7) 1px 0 5px;
-            z-index: 2;
-            
-            @include bp-custom-min(850) {
-                font-size: rem(10);
-                max-width: 40%;
-                min-width: 500px;
-            }
-
-            h1 {
-                font-size: em(40, 10);
-                margin-bottom: 10px;
-            }
-
-            span {
-                font-size: rem(15);
-                padding-right: 10px;
-
-                &:not(:first-of-type) {
-                    border-left: 1px solid $lightest-neutral;
-                    padding-left: 10px;
-                }
-            }
-
-            .overview {
-                font-size: em(20, 10);
-                margin: 5px 0;
-            }
-
-            .tags {
-                display: flex;
-                align-items: center;
-                margin: 10px 0;;
-
-                .tag-group-1 {
-                    margin-right: 15px;
-                }
-
-            }
-
-            .score {
-                font-size: rem(18);
-                background-color: orange;
-                padding: 5px 10px;
-                display: inline-block;
-                border-radius: 8px;
-                text-shadow: $darkest-neutral 1px 0 5px;
-            }
-
-            .play-trailer {
-                margin-left: 15px;
-            }
-
-            button {
-                font-size: em(22, 10);
-                box-shadow: 0 0 10px rgba($darkest-neutral, 0.5);
-            }
-        }
-        
         .backdrop {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            object-position: top;
+        }
+    }
+
+    .details,
+    .mobile-details {
+        position: absolute;
+        font-size: rem(7);
+        top: 60%;
+        left: 5%;
+        max-width: 80%;
+        padding: 15px;
+        border-radius: 8px;
+        transform: translateY(-60%);
+        text-align: left;
+        text-shadow: rgba($darkest-neutral, 0.7) 1px 0 5px;
+        background-color: rgba($darkest-neutral, 0.3);
+        
+        @include bp-sm-phone-landscape {
+            font-size: rem(8);
+            width: 80%;
+        }
+        
+        @include bp-lg-laptop {
+            font-size: rem(10);
+            width: 41.5%;
+        }
+
+        h1 {
+            font-size: em(40, 10);
+            line-height: 1;
+            margin-bottom: 10px;
+            
+            @include bp-custom-min(1250) {
+                line-height: 38.4px;
+                margin-bottom: 0;
+            }
+        }
+
+        span {
+            font-size: rem(15);
+            padding-right: 10px;
+
+            &:not(:first-of-type) {
+                padding-left: 10px;
+                
+                @include bp-custom-min(650) {
+                    border-left: 1px solid $lightest-neutral;
+                }
+            }
+        }
+
+        .overview {
+            font-size: em(20, 10);
+            margin: 5px 0;
+        }
+
+        .tags {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;;
+
+            .tag-group-1 {
+                margin-right: 15px;
+            }
+
+        }
+
+        .score {
+            font-size: rem(18);
+            background-color: orange;
+            padding: 5px 10px;
+            display: inline-block;
+            border-radius: 8px;
+            text-shadow: $darkest-neutral 1px 0 5px;
+        }
+
+        .play-trailer {
+            font-size: rem(18);
+            margin-left: 15px;
+            padding: 8px 13px;
+            transform: translateY(-1px);
+        }
+
+        button {
+            font-size: em(22, 10);
+            box-shadow: 0 0 10px rgba($darkest-neutral, 0.5);
+        }
+    }
+
+    .details {
+        display: none;
+
+        @include bp-custom-min(650) {
+            display: block;
+        }
+
+        .overview {
+            display: none;
+    
+            @include bp-custom-min(1250) {
+                display: block;
+            }
+        }
+    }
+
+    .mobile-details {
+        display: block;
+        position: static;
+        width: 80%;
+        max-width: 100%;
+        margin: 0 auto;
+        padding: 15px 0;
+        border-radius: 0;
+        transform: translateY(0);
+        background-color: transparent;
+        text-align: center;
+
+        @include bp-sm-phone-landscape {
+            text-align: left;
+        }
+
+        @include bp-custom-min(1250) {
+            display: none;
+        }
+
+        *:not(.overview) {
+            display: inline-block;
+
+            @include bp-custom-min(650) {
+                display: none;
+            }
+        }
+
+        span:not(:first-of-type) {
+            &::before {
+                content: "•";
+                position: relative;
+                left: -10px;
+            }
+        }
+
+        .tags {
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+
+            @include bp-custom-min(530) {
+                flex-direction: row;
+            }
+
+            @include bp-sm-phone-landscape {
+                text-align: left;
+            }
+
+            .tag-group-1,
+            .tag-group-2 {
+                margin-right: 0;
+                
+                @include bp-custom-min(530) {
+                    width: 45%;
+                    margin-right: 15px;
+                }
+
+                .tag {
+                    display: block;
+                    white-space: nowrap;
+
+                    @include bp-custom-min(530) {
+                        display: inline-block;
+                    }
+                }
+            }
+
+            .tag-group-1 {
+                margin-bottom: 5px;
+
+                @include bp-custom-min(530) {
+                    margin-bottom: 0;
+                }
+            }
         }
     }
 
     .cast {
-        margin-top: 50px;
+        margin-top: 25px;
+        
+        @include bp-custom-min(1250) {
+            margin-top: 50px;
+        }
 
         h2 {
             width: 80%;
@@ -237,12 +382,28 @@ getShow();
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            align-items: center;
+            align-items: stretch;
             margin: 0 auto;
             
             .actor-card {
-                flex: 0 0 calc(18% - 1em);
+                flex: 0 0 calc(100% - 1em);
                 margin: 1em 0 0 20px;
+
+                @include bp-custom-min(400) {
+                    flex: 0 0 calc(42% - 1em);
+                }
+
+                @include bp-custom-min(630) {
+                    flex: 0 0 calc(28% - 1em);
+                }
+                
+                @include bp-lg-laptop {
+                    flex: 0 0 calc(21.5% - 1em);
+                }
+
+                @include bp-xl-desktop {
+                    flex: 0 0 calc(17% - 1em);
+                }
                 
                 &:not(:nth-child(5n+5)) {
                     margin-right: 1.333333em;
@@ -250,7 +411,11 @@ getShow();
                 
                 img {
                     width: 100%;
-                    border-radius: 50px;
+                    border-radius: 25px;
+
+                    @include bp-sm-phone-landscape {
+                        border-radius: 50px;
+                    }
                 }
             }
         }

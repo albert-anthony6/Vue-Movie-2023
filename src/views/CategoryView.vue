@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+import { useMq } from "vue3-mq";
 import { useRoute, RouterLink } from 'vue-router';
 import vPagination from '@hennge/vue3-pagination';
 import '@hennge/vue3-pagination/dist/vue3-pagination.css';
@@ -7,6 +8,8 @@ import useShowsStore from '@/stores/shows';
 import type { Show } from '@/utils/show';
 
 const route = useRoute();
+
+const mq = useMq();
 
 const baseImgUrl = 'http://image.tmdb.org/t/p/';
 const posterSize = 'w500';
@@ -35,6 +38,17 @@ const shows = ref<Show[]>([]);
 const pageCount = ref(0);
 const currentPage = ref(1);
 
+const rangeSize = computed(() => {
+    let size = 3;
+
+    if (mq.smMinus) {
+        size = 1;
+    } else if (mq.mdMinus) {
+        size = 2;
+    }
+    return size;
+})
+
 function handlePageUpdate(val: any) {
     currentPage.value = val;
     getShows(val);
@@ -56,7 +70,7 @@ getShows('1');
                     v-if="pageCount > 1"
                     v-model="currentPage"
                     :pages="pageCount"
-                    :range-size="3"
+                    :range-size="rangeSize"
                     class="pagination"
                     @update:modelValue="handlePageUpdate"
                 />
@@ -73,7 +87,7 @@ getShows('1');
                 v-if="pageCount > 1"
                 v-model="currentPage"
                 :pages="pageCount"
-                :range-size="3"
+                :range-size="rangeSize"
                 class="pagination"
                 @update:modelValue="handlePageUpdate"
             />
@@ -98,15 +112,25 @@ getShows('1');
 
     .top-container {
         display: flex;
-        align-items: center;
-        justify-content: space-between;
+        flex-direction: column;
+        align-items: flex-start;
         margin-bottom: 10px;
+        
+        @include bp-lg-laptop {
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+        }
 
         h1 {
             text-transform: capitalize;
+            margin-bottom: 15px;
+
+            @include bp-lg-laptop {
+                margin-bottom: 0;
+            }
         }
     }
-
 
     .options {
         display: flex;
@@ -115,18 +139,41 @@ getShows('1');
         margin-bottom: 30px;
 
         .show {
-            width: 18%;
             margin-top: 15px;
+            flex: 0 0 calc(100% - 1em);
             cursor: pointer;
-
-            flex: 0 0 calc(18% - 1em);
             margin: 1em 0 0 20px;
+            
+            @include bp-custom-min(400) {
+                flex: 0 0 calc(48.5% - 1em);
+            }
+
+            @include bp-custom-min(630) {
+                flex: 0 0 calc(32.5% - 1em);
+            }
+            
+            @include bp-lg-laptop {
+                flex: 0 0 calc(24% - 1em);
+            }
+
+            @include bp-xl-desktop {
+                flex: 0 0 calc(19.5% - 1em);
+            }
 
             img {
                 width: 100%;
                 height: 100%;
                 object-fit: cover;
             }
+        }
+    }
+
+    .pagination:nth-child(3) {
+        width: 80%;
+        margin: 0 auto;
+
+        @include bp-sm-phone-landscape {
+            width: 100%;
         }
     }
 }
