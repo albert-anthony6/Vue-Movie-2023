@@ -2,6 +2,7 @@
 import { ref, watch } from 'vue';
 import { useMq } from "vue3-mq";
 import { RouterLink, useRoute } from 'vue-router';
+import DropdownMenu from '@/components/DropdownMenu.vue';
 import IconTMDBLogo from '@/assets/icons/icon_tmdb_logo.svg';
 
 const route = useRoute();
@@ -9,6 +10,17 @@ const route = useRoute();
 const mq = useMq();
 
 const isMenuOpen = ref(false);
+const dropdownValue = ref('movie');
+const dropdownOption = ref([
+    {
+        name: 'Movies',
+        value: 'movie'
+    },
+    {
+        name: 'TV',
+        value: 'tv'
+    }
+]);
 
 function closeMenu() {
     if (isMenuOpen.value) {
@@ -33,7 +45,13 @@ watch(
             <RouterLink to="/" class="logo">
                 <IconTMDBLogo />
             </RouterLink>
-            <ul>
+            <ul class="nav-options">
+                <li>
+                    <div class="search-container">
+                        <input type="text" placeholder="Search...">
+                        <DropdownMenu v-model="dropdownValue" :options="dropdownOption" class="dropdown" />
+                    </div>
+                </li>
                 <li>
                     <a
                         :href="route.name !== 'show' ? `${route.path}?type=movies` : '/?type=movies'"
@@ -72,7 +90,7 @@ watch(
     padding: 15px 40px 8px;
 
     .header-content,
-    ul {
+    .nav-options {
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -92,7 +110,7 @@ watch(
             width: 100px;
         }
 
-        ul {
+        .nav-options {
             display: none;
 
             @include bp-lg-laptop {
@@ -115,6 +133,64 @@ watch(
 
         .active {
             color: #ff70e0;
+        }
+    }
+}
+
+.search-container {
+    position: relative;
+    display: flex;
+    width: fit-content;
+    margin: 15px 30px;
+    text-align: center;
+
+    @include bp-lg-laptop {
+        margin: unset;
+    }
+
+    input {
+        margin-right: 61px;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    .dropdown {
+        position: absolute;
+        top: 0;
+        right: 0;
+        height: 102%;
+    }
+
+    :deep() {
+        .dropdown-menu {
+            font-size: rem(14);
+            padding: unset;
+            margin: unset;
+            min-width: 61px;
+            
+            .selected-option {
+                height: 100%;
+                color: $lightest-neutral;
+                background-color: red;
+                border: 1px solid red;
+                padding: 5px;
+                margin: unset;
+                border-radius: 0;
+                border-start-end-radius: 3px;
+                border-end-end-radius: 3px;
+            }
+
+            .option {
+                padding: 10px 0;
+                color: $darkest-neutral;
+                background-color: $lightest-neutral;
+                transition: all 0.3s ease;
+
+                &:hover {
+                    color: $lightest-neutral;
+                    background-color: red;
+                }
+            }
         }
     }
 }
@@ -154,7 +230,7 @@ watch(
             }
         }
         
-        ul {
+        .nav-options {
             text-align: left;
             margin-top: 20px;
 

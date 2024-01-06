@@ -42,6 +42,13 @@ ul {
     list-style: none;
 }
 
+input {
+    outline: none;
+    border: none;
+    border-radius: 3px;
+    padding: 10px 15px;
+}
+
 button {
     font-size: em(14, 10);
     font-weight: bold;
