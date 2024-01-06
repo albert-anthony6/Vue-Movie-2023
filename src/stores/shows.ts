@@ -56,5 +56,15 @@ export default defineStore({
                         reject(error)
                     })
         }),
+        getSearch: (showType: string, searchValue: string, page = '1') =>
+            new Promise ((resolve, reject) => {
+                axios.get(`/.netlify/functions/getSearch/?showType=${showType}&searchValue=${searchValue}&page=${page}`)
+                    .then((resp) => {
+                        resolve(resp.data)
+                    })
+                    .catch((error) => {
+                        reject(error)
+                    })
+        }),
     },
 });

@@ -2,6 +2,7 @@
 import { ref, watch } from 'vue';
 import { useMq } from "vue3-mq";
 import { RouterLink, useRoute } from 'vue-router';
+import useShowsStore from '@/stores/shows';
 import DropdownMenu from '@/components/DropdownMenu.vue';
 import IconTMDBLogo from '@/assets/icons/icon_tmdb_logo.svg';
 
@@ -21,6 +22,30 @@ const dropdownOption = ref([
         value: 'tv'
     }
 ]);
+
+let timeout: ReturnType<typeof setTimeout> | null;
+const searchValue = ref('');
+const showsStore = useShowsStore();
+
+function debounceSearch(delayMs: number) {
+    if (timeout) {
+        clearTimeout(timeout);
+        timeout = null;
+    }
+
+    // Do nothing if search value is empty
+    if (!searchValue.value) return;
+
+    timeout = setTimeout(() => {
+        showsStore.getSearch(dropdownValue.value, searchValue.value)
+            .then((resp) => {
+                console.log(resp);
+            })
+            .catch((err) => {
+                console.error(err);
+            })
+    }, delayMs || 3000)
+}
 
 function closeMenu() {
     if (isMenuOpen.value) {
@@ -48,7 +73,7 @@ watch(
             <ul class="nav-options">
                 <li>
                     <div class="search-container">
-                        <input type="text" placeholder="Search...">
+                        <input v-model="searchValue" type="text" placeholder="Search..." @input="debounceSearch(1000)">
                         <DropdownMenu v-model="dropdownValue" :options="dropdownOption" class="dropdown" />
                     </div>
                 </li>
