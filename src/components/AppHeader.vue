@@ -27,6 +27,7 @@ const dropdownOption = ref([
 function goToSearchPage() {
     showsStore.searchInfo = { searchValue: searchValue.value, dropdownValue: dropdownValue.value };
     router.push({ name: 'search', query: { type: dropdownValue.value, value: searchValue.value } });
+    isMenuOpen.value = false;
 }
 
 let timeout: ReturnType<typeof setTimeout> | null;
@@ -174,9 +175,14 @@ watch(
     }
 
     input {
+        font-size: rem(16);
         margin-right: 61px;
         border-top-right-radius: 0;
         border-bottom-right-radius: 0;
+        
+        @include bp-lg-laptop {
+            font-size: rem(13.5);
+         }
     }
 
     .dropdown {
@@ -198,11 +204,15 @@ watch(
                 color: $lightest-neutral;
                 background-color: red;
                 border: 1px solid red;
-                padding: 5px;
+                padding: 8px 5px;
                 margin: unset;
                 border-radius: 0;
                 border-start-end-radius: 3px;
                 border-end-end-radius: 3px;
+                
+                @include bp-lg-laptop {
+                    padding: 5px;
+                 }
             }
 
             .option {
@@ -323,6 +333,7 @@ watch(
 
     &.menu-active span {
         background-color: transparent;
+        transition: background-color 0s ease;
 
         &::before {
             background-color: red;
