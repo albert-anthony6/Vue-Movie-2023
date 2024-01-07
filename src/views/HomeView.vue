@@ -124,7 +124,7 @@ getShows('top_rated', 'topRated');
       @toggle-modal="showTrailer = false"
     />
     <div v-if="shows.nowPlaying" class="now-playing">
-      <Carousel id="gallery" :items-to-show="1" :autoplay="5000" :wrap-around="true" v-model="currentSlide">
+      <Carousel id="gallery" :items-to-show="1" :transition="1000" :autoplay="5000" :wrap-around="true" v-model="currentSlide">
           <Slide v-for="slide in shows.nowPlaying.length" :key="slide">
             <div class="details">
               <h1 class="title">{{ shows.nowPlaying[slide - 1].title }}</h1>
