@@ -20,7 +20,10 @@ interface VideoData {
 export default defineStore({
     id: 'shows',
     state: () => ({
-        shows: [],
+        searchInfo: {
+            searchValue: '',
+            dropdownValue: 'movie'
+        },
     }),
     getters: {},
     actions: {
@@ -56,7 +59,7 @@ export default defineStore({
                         reject(error)
                     })
         }),
-        getSearch: (showType: string, searchValue: string, page = '1') =>
+        getSearch: (showType: string, searchValue: string, page = '1'): Promise<ShowCategoryData> =>
             new Promise ((resolve, reject) => {
                 axios.get(`/.netlify/functions/getSearch/?showType=${showType}&searchValue=${searchValue}&page=${page}`)
                     .then((resp) => {

@@ -1,7 +1,10 @@
 <script lang="ts" setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue';
+import useShowsStore from '@/stores/shows';
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'updateSearch'])
+
+const showsStore = useShowsStore();
 
 const isDropdownVisible = ref(false);
 const selectedOption = ref('Movies');
@@ -27,6 +30,10 @@ function toggleOptionSelect(option: {name: string, value: string}) {
     selectedOption.value = option.name;
     emit('update:modelValue', option.value);
     isDropdownVisible.value = false;
+
+    if (showsStore.searchInfo.searchValue) {
+        emit('updateSearch');
+    }
 }
 
 onMounted(() => {

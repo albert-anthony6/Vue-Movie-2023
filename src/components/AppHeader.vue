@@ -1,12 +1,13 @@
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
 import { useMq } from "vue3-mq";
-import { RouterLink, useRoute } from 'vue-router';
+import { RouterLink, useRoute, useRouter } from 'vue-router';
 import useShowsStore from '@/stores/shows';
 import DropdownMenu from '@/components/DropdownMenu.vue';
 import IconTMDBLogo from '@/assets/icons/icon_tmdb_logo.svg';
 
 const route = useRoute();
+const router = useRouter();
 
 const mq = useMq();
 
@@ -23,6 +24,11 @@ const dropdownOption = ref([
     }
 ]);
 
+function goToSearchPage() {
+    showsStore.searchInfo = { searchValue: searchValue.value, dropdownValue: dropdownValue.value };
+    router.push({ name: 'search', query: { type: dropdownValue.value, value: searchValue.value } });
+}
+
 let timeout: ReturnType<typeof setTimeout> | null;
 const searchValue = ref('');
 const showsStore = useShowsStore();
@@ -37,13 +43,7 @@ function debounceSearch(delayMs: number) {
     if (!searchValue.value) return;
 
     timeout = setTimeout(() => {
-        showsStore.getSearch(dropdownValue.value, searchValue.value)
-            .then((resp) => {
-                console.log(resp);
-            })
-            .catch((err) => {
-                console.error(err);
-            })
+        goToSearchPage();
     }, delayMs || 3000)
 }
 
@@ -74,7 +74,7 @@ watch(
                 <li>
                     <div class="search-container">
                         <input v-model="searchValue" type="text" placeholder="Search..." @input="debounceSearch(1000)">
-                        <DropdownMenu v-model="dropdownValue" :options="dropdownOption" class="dropdown" />
+                        <DropdownMenu v-model="dropdownValue" @updateSearch="goToSearchPage" :options="dropdownOption" class="dropdown" />
                     </div>
                 </li>
                 <li>

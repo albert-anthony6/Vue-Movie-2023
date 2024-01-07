@@ -1,20 +1,37 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
 import { useMq } from "vue3-mq";
-import { useRoute, RouterLink } from 'vue-router';
+import { useRoute, useRouter, RouterLink } from 'vue-router';
 import vPagination from '@hennge/vue3-pagination';
 import '@hennge/vue3-pagination/dist/vue3-pagination.css';
 import useShowsStore from '@/stores/shows';
 import type { Show } from '@/utils/show';
 
 const route = useRoute();
+const router = useRouter();
 
 const mq = useMq();
 
+const showsStore = useShowsStore();
+
 const baseImgUrl = 'http://image.tmdb.org/t/p/';
 const posterSize = 'w500';
-const pageTitle = route.params.categoryName as string;
+const pageTitle = route.params.categoryName as string || 'Search Result:';
 const isLoading = ref(true);
+
+async function getSearchResults() {
+    showsStore.getSearch(showsStore.searchInfo.dropdownValue, showsStore.searchInfo.searchValue)
+        .then((resp) => {
+            // API states page requests must be 500 or less
+            pageCount.value = resp.total_pages > 500 ? 500 : resp.total_pages;
+            shows.value = resp.results;
+            isLoading.value = false;
+        })
+        .catch((err) => {
+            console.error(err);
+            isLoading.value = false; 
+        })
+}
 
 async function getShows(page: string) {
     let showType = 'movie';
@@ -54,8 +71,15 @@ function handlePageUpdate(val: any) {
     getShows(val);
 }
 
-const showsStore = useShowsStore();
-getShows('1');
+if (route.name === 'search') {
+    // Return to main page if there is no search value
+    if (!showsStore.searchInfo.searchValue) {
+        router.push('/');
+    }
+    getSearchResults();
+} else {
+    getShows('1');
+}
 </script>
 
 <template>
