@@ -19,8 +19,8 @@ const posterSize = 'w500';
 const pageTitle = route.params.categoryName as string || 'Search Result:';
 const isLoading = ref(true);
 
-async function getSearchResults() {
-    showsStore.getSearch(showsStore.searchInfo.dropdownValue, showsStore.searchInfo.searchValue)
+async function getSearchResults(page: string) {
+    showsStore.getSearch(showsStore.searchInfo.dropdownValue, showsStore.searchInfo.searchValue, page)
         .then((resp) => {
             // API states page requests must be 500 or less
             pageCount.value = resp.total_pages > 500 ? 500 : resp.total_pages;
@@ -68,7 +68,11 @@ const rangeSize = computed(() => {
 
 function handlePageUpdate(val: any) {
     currentPage.value = val;
-    getShows(val);
+    if (route.name === 'search') {
+        getSearchResults(val);
+    } else {
+        getShows(val);
+    }
 }
 
 if (route.name === 'search') {
@@ -76,7 +80,8 @@ if (route.name === 'search') {
     if (!showsStore.searchInfo.searchValue) {
         router.push('/');
     }
-    getSearchResults();
+
+    getSearchResults('1');
 } else {
     getShows('1');
 }
