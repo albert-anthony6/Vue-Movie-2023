@@ -153,6 +153,10 @@ button.carousel__prev {
     }
 }
 
+.carousel__slide--visible {
+    transform: rotateY(0);
+}
+
 .carousel__pagination {
     &-item button::after {
         background-color: $light-grey;
