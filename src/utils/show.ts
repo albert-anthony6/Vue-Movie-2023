@@ -6,6 +6,7 @@ interface Show {
     overview: string;
     poster_path: string;
     title: string;
+    name: string;
 }
 
 interface ShowDetails {

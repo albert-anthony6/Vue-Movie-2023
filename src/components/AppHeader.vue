@@ -82,14 +82,14 @@ watch(
                     <a
                         :href="route.name !== 'show' ? `${route.path}?type=movies` : '/?type=movies'"
                         @click="closeMenu"
-                        :class="{ active: route.query.type === 'movies' }"
+                        :class="{ active: route.query.type?.includes('movie') || !route.query.type }"
                     >
                         Movies
                     </a>
                 </li>
                 <li>
                     <a
-                        :href="route.name !== 'show' ? `${route.path}?type=tv` : '/?type=tv'"
+                        :href="route.name !== 'show' && !route.query.value ? `${route.path}?type=tv` : '/?type=tv'"
                         @click="closeMenu"
                         :class="{ active: route.query.type === 'tv' }"
                     >

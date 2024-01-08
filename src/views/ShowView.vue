@@ -189,6 +189,7 @@ getShow();
         font-size: rem(7);
         top: 60%;
         left: 5%;
+        width: fit-content;
         max-width: 80%;
         padding: 15px;
         border-radius: 8px;
@@ -199,22 +200,23 @@ getShow();
         
         @include bp-sm-phone-landscape {
             font-size: rem(8);
-            width: 80%;
         }
         
         @include bp-lg-laptop {
             font-size: rem(10);
-            width: 41.5%;
+            max-width: 50%;
         }
 
         h1 {
+            width: 100%;
             font-size: em(40, 10);
             line-height: 1;
             margin-bottom: 10px;
             
             @include bp-custom-min(1250) {
+                width: auto;
                 line-height: 38.4px;
-                margin-bottom: 0;
+                margin-bottom: 5px;
             }
         }
 

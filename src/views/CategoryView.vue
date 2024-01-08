@@ -95,6 +95,7 @@ if (route.name === 'search') {
         <template v-else>
             <div class="top-container">
                 <h1>{{ pageTitle.replace('_', ' ') }}</h1>
+                <h2 v-if="!shows.length" class="empty-state">No Shows Found</h2>
                 <v-pagination
                     v-if="pageCount > 1"
                     v-model="currentPage"
@@ -157,6 +158,19 @@ if (route.name === 'search') {
 
             @include bp-lg-laptop {
                 margin-bottom: 0;
+            }
+        }
+
+        h2 {
+            position: absolute;
+            width: 100%;
+            font-size: rem(32);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+
+            @include bp-sm-phone-landscape {
+                font-size: rem(52);
             }
         }
     }

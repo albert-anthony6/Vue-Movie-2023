@@ -127,7 +127,7 @@ getShows('top_rated', 'topRated');
       <Carousel id="gallery" :items-to-show="1" :transition="1000" :autoplay="5000" :wrap-around="true" v-model="currentSlide">
           <Slide v-for="slide in shows.nowPlaying.length" :key="slide">
             <div class="details">
-              <h1 class="title">{{ shows.nowPlaying[slide - 1].title }}</h1>
+              <h1 class="title">{{ shows.nowPlaying[slide - 1].title || shows.nowPlaying[slide - 1].name }}</h1>
               <p class="overview">
                 {{ shows.nowPlaying[slide - 1].overview.slice(0, 303) }}<span v-if="shows.nowPlaying[slide - 1].overview.length > 303">...</span>
               </p>
@@ -309,6 +309,7 @@ getShows('top_rated', 'topRated');
         font-size: rem(7);
         top: 60%;
         left: 5%;
+        width: fit-content;
         max-width: 80%;
         padding: 15px;
         border-radius: 8px;
@@ -319,22 +320,22 @@ getShows('top_rated', 'topRated');
         
         @include bp-sm-phone-landscape {
           font-size: rem(8);
-          width: 80%;
         }
         
         @include bp-lg-laptop {
           font-size: rem(10);
-          width: 41.5%;
+          max-width: 50%;
         }
 
         h1 {
+          width: 100%;
           font-size: em(40, 10);
           line-height: 1;
           margin-bottom: 10px;
           
           @include bp-sm-phone-landscape {
             line-height: 38.4px;
-            margin-bottom: 0;
+            margin-bottom: 5px;
           }
         }
 
