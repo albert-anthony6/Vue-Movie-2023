@@ -151,9 +151,9 @@ getShow();
         <div v-else-if="show.actors?.cast && !show.actors?.cast.length" class="no-info">
             <div class="content">
                 <p>Sorry!</p>
-                <template v-if="show.showDetails?.title">
+                <template v-if="show.showDetails?.title || show.showDetails?.name">
                     <h2>No Info Available for: </h2>
-                    <h2>"{{ show.showDetails.title }}"</h2>
+                    <h2>"{{ show.showDetails.title || show.showDetails?.name }}"</h2>
                 </template>
                 <h2 v-else>No Info Available for this show.</h2>
             </div>
@@ -435,6 +435,8 @@ getShow();
     
     .content {
         position: absolute;
+        width: 100%;
+        padding: 0 25px;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
@@ -443,6 +445,18 @@ getShow();
             font-family: $secondary-font-stack;
             font-size: rem(80);
             transform: skew(-10deg, -10deg);
+        }
+
+        h2 {
+            font-size: rem(35);
+            
+            @include bp-xs-phone {
+                font-size: rem(42);
+            }
+
+            @include bp-sm-phone-landscape {
+                font-size: rem(52);
+            }
         }
     }
 }

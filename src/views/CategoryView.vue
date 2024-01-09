@@ -128,11 +128,11 @@ if (route.name === 'search') {
 <style lang="scss" scoped>
 .category-view {
     padding: 150px 0 50px;
+    min-height: 100vh;
     background-image: url('@/assets/images/test.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    min-height: 100vh;
 
     .top-container,
     .options {
