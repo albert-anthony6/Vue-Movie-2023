@@ -72,7 +72,7 @@ const rangeSize = computed(() => {
     let size = 3;
 
     if (mq.smMinus) {
-        size = 1;
+        size = 0;
     } else if (mq.mdMinus) {
         size = 2;
     }
