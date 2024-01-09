@@ -1,11 +1,14 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 import { RouterLink, useRoute } from 'vue-router';
+import { useNotification } from "@kyvg/vue3-notification";
 import { Carousel, Slide, Navigation, Pagination, } from 'vue3-carousel';
 import VideoModal from '@/components/VideoModal.vue';
 import 'vue3-carousel/dist/carousel.css'
 import useShowsStore from '@/stores/shows';
 import type { Show } from '@/utils/show';
+
+const { notify }  = useNotification();
 
 const route = useRoute();
 
@@ -70,12 +73,25 @@ async function getVideos(id: string) {
 
   await showsStore.getVideos(id)
     .then((resp) => {
+      if (resp) {
         trailerKey.value = resp.key;
         showTrailer.value = true;
+      } else {
+        notify({
+            title: "No Trailer Found",
+            text: "No Available Trailer to Show.",
+            type: "error",
+        });
+      }
         isLoading.value = false;
     })
     .catch((err) => {
         console.error(err);
+        notify({
+            title: "No Data Found",
+            text: "Trailer Data Not Found.",
+            type: "error",
+        });
         showTrailer.value = false;
         isLoading.value = false;
     })
@@ -96,6 +112,11 @@ async function getShows(category: string, keyName?: string) {
     })
     .catch((err) => {
       console.error(err);
+      notify({
+          title: "No Data Found",
+          text: "Show Data Not Found.",
+          type: "error",
+      });
       isLoading.value = false;
     });
 }
@@ -320,7 +341,7 @@ getShows('top_rated', 'topRated');
     bottom: 0;
     left: -1.5px;
     padding: 0 5px;
-    background-color: red;
+    background-color: #fc0505;;
   }
 
   .now-playing {

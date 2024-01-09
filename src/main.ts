@@ -1,6 +1,7 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { Vue3Mq } from 'vue3-mq';
+import Notifications from '@kyvg/vue3-notification'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faArrowRight, faSearch } from '@fortawesome/free-solid-svg-icons'
@@ -25,6 +26,7 @@ app.use(Vue3Mq, {
 
 app.use(createPinia());
 app.use(router);
+app.use(Notifications)
 
 library.add(faArrowRight, faSearch)
 

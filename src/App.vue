@@ -6,6 +6,7 @@ import { RouterView } from 'vue-router';
 <template>
   <AppHeader />
   <RouterView :key="$route.fullPath" />
+  <notifications position="bottom left" class="notifications" />
 </template>
 
 <style lang="scss">

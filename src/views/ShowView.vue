@@ -4,6 +4,9 @@ import { useRoute } from 'vue-router';
 import VideoModal from '@/components/VideoModal.vue';
 import useShowsStore from '@/stores/shows';
 import type { ShowDetails } from '@/utils/show';
+import { useNotification } from "@kyvg/vue3-notification";
+
+const { notify }  = useNotification();
 
 const route = useRoute();
 
@@ -28,12 +31,25 @@ async function getVideos(id: string) {
   isLoading.value = true;
   await showsStore.getVideos(id)
     .then((resp) => {
-        trailerKey.value = resp.key;
-        showTrailer.value = true;
+        if (resp) {
+            trailerKey.value = resp.key;
+            showTrailer.value = true;
+        } else {
+            notify({
+                title: "No Trailer Found",
+                text: "No Available Trailer to Show.",
+                type: "error",
+            });
+        }
         isLoading.value = false;
     })
     .catch((err) => {
         console.error(err);
+        notify({
+            title: "No Data Found",
+            text: "Trailer Data Not Found.",
+            type: "error",
+        });
         showTrailer.value = false;
         isLoading.value = false;
     })
@@ -54,6 +70,11 @@ async function getShow() {
         })
         .catch((err) => {
             console.error(err);
+            notify({
+                title: "No Data Found",
+                text: "Show Data Not Found.",
+                type: "error",
+            });
             isLoading.value = false;
         })
 }
@@ -261,16 +282,16 @@ getShow();
 
         .score {
             font-size: rem(18);
-            background-color: orange;
-            padding: 5px 10px;
             display: inline-block;
+            padding: 5px 10px;
+            margin-right: 15px;
+            background-color: orange;
             border-radius: 8px;
             text-shadow: $darkest-neutral 1px 0 5px;
         }
 
         .play-trailer {
             font-size: rem(18);
-            margin-left: 15px;
             padding: 8px 13px;
             transform: translateY(-1px);
         }

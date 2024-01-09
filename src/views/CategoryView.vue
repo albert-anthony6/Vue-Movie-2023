@@ -3,9 +3,12 @@ import { ref, computed } from 'vue';
 import { useMq } from "vue3-mq";
 import { useRoute, useRouter, RouterLink } from 'vue-router';
 import vPagination from '@hennge/vue3-pagination';
+import { useNotification } from "@kyvg/vue3-notification";
 import '@hennge/vue3-pagination/dist/vue3-pagination.css';
 import useShowsStore from '@/stores/shows';
 import type { Show } from '@/utils/show';
+
+const { notify }  = useNotification();
 
 const route = useRoute();
 const router = useRouter();
@@ -29,6 +32,11 @@ async function getSearchResults(page: string) {
         })
         .catch((err) => {
             console.error(err);
+            notify({
+                title: "No Data Found",
+                text: "Data Not Found.",
+                type: "error",
+            });
             isLoading.value = false; 
         })
 }
@@ -47,6 +55,11 @@ async function getShows(page: string) {
         })
         .catch((err) => {
             console.error(err);
+            notify({
+                title: "No Data Found",
+                text: "Data Not Found.",
+                type: "error",
+            });
             isLoading.value = false; 
         })
 }
