@@ -74,7 +74,17 @@ getShow();
                 @toggle-modal="showTrailer = false"
             />
             <div class="banner">
-                <img class="backdrop" :src="`${baseImgUrl}${backdropSize}${show.showDetails.backdrop_path}`" :alt="show.showDetails.title" />
+                <img 
+                    v-if="show.showDetails.backdrop_path"
+                    class="backdrop" :src="`${baseImgUrl}${backdropSize}${show.showDetails.backdrop_path}`"
+                    :alt="show.showDetails.title || show.showDetails.name"
+                />
+                <img
+                    v-else
+                    src="@/assets/images/default_backdrop.jpg"
+                    :alt="show.showDetails.title || show.showDetails.name"
+                    class="backdrop"
+                />
                 <div class="details">
                     <h1 class="title">{{ show.showDetails.title || show.showDetails.name }}</h1>
                     <span v-if="show.showDetails.release_date" class="year">{{ show.showDetails.release_date.split('-')[0] }}</span>

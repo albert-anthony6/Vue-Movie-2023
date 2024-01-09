@@ -145,10 +145,15 @@ getShows('top_rated', 'topRated');
             <img
               v-if="shows.nowPlaying[slide - 1].backdrop_path"
               :src="`http://image.tmdb.org/t/p/${backdropSize}${shows.nowPlaying[slide - 1].backdrop_path}`"
-              :alt="shows.nowPlaying[slide - 1].title"
+              :alt="shows.nowPlaying[slide - 1].title || shows.nowPlaying[slide - 1].name"
               class="main-carousel__item"
             />
-            <img v-else src="@/assets/images/default_backdrop.jpg" :alt="shows.nowPlaying[slide - 1].title" class="default-img" />
+            <img
+              v-else
+              src="@/assets/images/default_backdrop.jpg"
+              :alt="shows.nowPlaying[slide - 1].title || shows.nowPlaying[slide - 1].name"
+              class="default-img"
+            />
           </Slide>
         </Carousel>
         <Carousel
@@ -163,10 +168,15 @@ getShows('top_rated', 'topRated');
             <img
               v-if="shows.nowPlaying[slide - 1].poster_path"
               :src="`http://image.tmdb.org/t/p/${posterSize}${shows.nowPlaying[slide - 1].backdrop_path}`"
-              :alt="shows.nowPlaying[slide - 1].title"
+              :alt="shows.nowPlaying[slide - 1].title || shows.nowPlaying[slide - 1].name"
               class="sub-carousel__item" @click="slideTo(slide - 1)"
             />
-            <img v-else src="@/assets/images/default_backdrop.jpg" :alt="shows.nowPlaying[slide - 1].title" class="default-img" />
+            <img
+              v-else
+              src="@/assets/images/default_backdrop.jpg"
+              :alt="shows.nowPlaying[slide - 1].title || shows.nowPlaying[slide - 1].name"
+              class="default-img"
+            />
           </Slide>
       </Carousel>
     </div>
@@ -186,10 +196,15 @@ getShows('top_rated', 'topRated');
             <img
               v-if="shows.upcoming[slide - 1].poster_path"
               :src="`${baseImgUrl}${posterSize}${shows.upcoming[slide].poster_path}`"
-              :alt="shows.upcoming[slide - 1].title"
+              :alt="shows.upcoming[slide - 1].title || shows.upcoming[slide - 1].name"
               class="carousel__item"
             />
-            <img v-else src="@/assets/images/default_poster.jpg" :alt="shows.upcoming[slide - 1].title" class="default-img" />
+            <img
+              v-else
+              src="@/assets/images/default_poster.jpg"
+              :alt="shows.upcoming[slide - 1].title || shows.upcoming[slide - 1].name"
+              class="default-img"
+            />
           </RouterLink>
           <p class="category-tag">Upcoming</p>
         </Slide>
@@ -221,10 +236,15 @@ getShows('top_rated', 'topRated');
             <img
               v-if="shows.popular[slide - 1].poster_path"
               :src="`${baseImgUrl}${posterSize}${shows.popular[slide].poster_path}`"
-              :alt="shows.popular[slide - 1].title"
+              :alt="shows.popular[slide - 1].title || shows.popular[slide - 1].name"
               class="carousel__item"
             />
-            <img v-else src="@/assets/images/default_poster.jpg" :alt="shows.popular[slide - 1].title" class="default-img" />
+            <img
+              v-else
+              src="@/assets/images/default_poster.jpg"
+              :alt="shows.popular[slide - 1].title || shows.popular[slide - 1].name"
+              class="default-img"
+            />
           </RouterLink>
           <p class="category-tag">Popular</p>
         </Slide>
@@ -234,7 +254,9 @@ getShows('top_rated', 'topRated');
           <Pagination />
           <RouterLink
             :to="`/category/popular/?type=${route.query.type || 'movies'}`"
-            class="view-all"><font-awesome-icon class="fa-icon" icon="fa-solid fa-arrow-right" /> View All
+            class="view-all"
+          >
+            <font-awesome-icon class="fa-icon" icon="fa-solid fa-arrow-right" /> View All
           </RouterLink>
         </template>
       </Carousel>
@@ -255,10 +277,15 @@ getShows('top_rated', 'topRated');
             <img
               v-if="shows.topRated[slide - 1].poster_path"
               :src="`${baseImgUrl}${posterSize}${shows.topRated[slide].poster_path}`"
-              :alt="shows.topRated[slide - 1].title"
+              :alt="shows.topRated[slide - 1].title || shows.topRated[slide - 1].name"
               class="carousel__item"
             />
-            <img v-else src="@/assets/images/default_poster.jpg" :alt="shows.topRated[slide - 1].title" class="default-img" />
+            <img
+              v-else
+              src="@/assets/images/default_poster.jpg"
+              :alt="shows.topRated[slide - 1].title || shows.topRated[slide - 1].name"
+              class="default-img"
+            />
           </RouterLink>
           <p class="category-tag">Top Rated</p>
         </Slide>
@@ -268,7 +295,9 @@ getShows('top_rated', 'topRated');
           <Pagination />
           <RouterLink
             :to="`/category/top_rated/?type=${route.query.type || 'movies'}/?type=${route.query.type || 'movies'}`"
-            class="view-all">View All <font-awesome-icon class="fa-icon" icon="fa-solid fa-arrow-right" />
+            class="view-all"
+          >
+            View All <font-awesome-icon class="fa-icon" icon="fa-solid fa-arrow-right" />
           </RouterLink>
         </template>
       </Carousel>

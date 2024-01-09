@@ -108,8 +108,8 @@ if (route.name === 'search') {
             <div class="options">
                 <div v-for="show in shows" :key="show.id" class="show">
                     <RouterLink :to="`/show/${show.id}/?type=${route.query.type || 'movies'}`">
-                        <img v-if="show.poster_path" :src="`${baseImgUrl}${posterSize}${show.poster_path}`" :alt="show.title" />
-                        <img v-else src="@/assets/images/default_poster.jpg" :alt="show.title" class="default-img" />
+                        <img v-if="show.poster_path" :src="`${baseImgUrl}${posterSize}${show.poster_path}`" :alt="show.title || show.name" />
+                        <img v-else src="@/assets/images/default_poster.jpg" :alt="show.title || show.name" class="default-img" />
                     </RouterLink>
                 </div>
             </div>
