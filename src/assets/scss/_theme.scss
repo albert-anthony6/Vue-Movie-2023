@@ -15,8 +15,14 @@ body {
 
 body {
     background-color: $darkest-neutral;
-    background-size: cover;
     cursor: default;
+}
+
+.page-bg {
+    background-image: url('@/assets/images/page_bg.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 p {

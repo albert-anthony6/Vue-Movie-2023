@@ -101,7 +101,7 @@ if (route.name === 'search') {
 </script>
 
 <template>
-    <div class="category-view">
+    <div class="category-view page-bg">
         <div v-if="isLoading" class="loader-container">
             <div class="loadbar" />
         </div>
@@ -142,10 +142,6 @@ if (route.name === 'search') {
 .category-view {
     padding: 150px 0 50px;
     min-height: 100vh;
-    background-image: url('@/assets/images/test.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
 
     .top-container,
     .options {

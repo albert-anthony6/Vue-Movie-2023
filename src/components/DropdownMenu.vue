@@ -74,17 +74,17 @@ onBeforeUnmount(() => {
 
     .selected-option {
         padding: 16px;
-        border: 1px solid #313131;
+        border: 1px solid $dark-grey;
         border-radius: 8px;
         margin-bottom: 4px;
     }
 
     .option {
         padding: 16px;
-        border: 1px solid #313131;
+        border: 1px solid $dark-grey;
 
         &:hover {
-            background-color: #c5c5c5;
+            background-color: $light-neutral;
         }
 
         &:last-of-type {

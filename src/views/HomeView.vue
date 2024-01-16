@@ -341,7 +341,7 @@ getShows('top_rated', 'topRated');
     bottom: 0;
     left: -1.5px;
     padding: 0 5px;
-    background-color: #fc0505;;
+    background-color: $red;
   }
 
   .now-playing {

@@ -3,7 +3,7 @@ import { RouterLink } from 'vue-router';
 </script>
 
 <template>
-    <div class="not-found">
+    <div class="not-found page-bg">
         <div class="content">
             <h1>This page could not be found.</h1>
             <img src="/src/assets/images/404.png" alt="404.">
@@ -20,10 +20,6 @@ import { RouterLink } from 'vue-router';
     position: relative;
     padding: 150px 0 50px;
     min-height: 100vh;
-    background-image: url('@/assets/images/test.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
 
     .content {
         position: absolute;

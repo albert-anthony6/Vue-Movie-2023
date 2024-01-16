@@ -83,7 +83,7 @@ getShow();
 </script>
 
 <template>
-    <div class="show-view">
+    <div class="show-view page-bg">
         <div v-if="isLoading" class="loader-container">
             <div class="loadbar" />
         </div>
@@ -195,10 +195,6 @@ getShow();
 <style lang="scss" scoped>
 .show-view {
     padding: 70px 0 50px;
-    background-image: url('@/assets/images/test.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
     min-height: 100vh;
 
     .banner {
@@ -458,10 +454,6 @@ getShow();
 .no-info {
     position: relative;
     padding: 70px 0 50px;
-    background-image: url('@/assets/images/test.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
     height: 100vh;
     
     .content {

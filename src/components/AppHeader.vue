@@ -152,13 +152,13 @@ watch(
                 }
 
                 &:hover {
-                    color: #ff70e0;
+                    color: $pink;
                 }
             }
         }
 
         .active {
-            color: #ff70e0;
+            color: $pink;
         }
     }
 }
@@ -202,8 +202,8 @@ watch(
             .selected-option {
                 height: 100%;
                 color: $lightest-neutral;
-                background-color: #fc0505;;
-                border: 1px solid #fc0505;;
+                background-color: $red;
+                border: 1px solid $red;
                 padding: 8px 5px;
                 margin: unset;
                 border-radius: 0;
@@ -223,7 +223,7 @@ watch(
 
                 &:hover {
                     color: $lightest-neutral;
-                    background-color: #fc0505;;
+                    background-color: $red;
                 }
             }
         }
@@ -279,7 +279,7 @@ watch(
                 transition: background-color 0.2s ease;
 
                 &:hover {
-                    background-color: #fc0505;;
+                    background-color: $red;
                 }
             }
         }
@@ -336,7 +336,7 @@ watch(
         transition: background-color 0s ease;
 
         &::before {
-            background-color: #fc0505;;
+            background-color: $red;
             margin-top: 0;
             -webkit-transform: rotate(45deg);
             -moz-transform: rotate(45deg);
@@ -345,7 +345,7 @@ watch(
         }
 
         &::after {
-            background-color: #fc0505;;
+            background-color: $red;
             transform: rotate(-45deg);
             margin-top: 0;
         }
