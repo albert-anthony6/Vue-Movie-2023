@@ -1,180 +1,206 @@
 *,
 *::before,
 *::after {
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
 }
 
 html,
 body {
-    font-family: $primary-font-stack;
-    color: $text-color-primary;
-    scroll-behavior: smooth;
+  font-family: $primary-font-stack;
+  color: $text-color-primary;
+  scroll-behavior: smooth;
 }
 
 body {
-    background-color: $darkest-neutral;
-    cursor: default;
+  background-color: $darkest-neutral;
+  cursor: default;
 }
 
 .page-bg {
-    background-image: url('@/assets/images/page_bg.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+  background-image: url('@/assets/images/page_bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 p {
-    font-size: rem(16);
+  font-size: rem(16);
 }
 
 a {
-    text-decoration: none;
-    color: inherit;
+  text-decoration: none;
+  color: inherit;
 }
 
 h1 {
-    line-height: 1.2;
+  line-height: 1.2;
 }
 
 h2 {
-    font-size: rem(52);
-    line-height: 1;
-    margin-bottom: 15px;
+  font-size: rem(52);
+  line-height: 1;
+  margin-bottom: 15px;
 }
 
 ul {
-    list-style: none;
+  list-style: none;
 }
 
 input {
-    outline: none;
-    border: none;
-    border-radius: 3px;
-    padding: 10px 15px;
+  outline: none;
+  border: none;
+  border-radius: 3px;
+  padding: 10px 15px;
 }
 
 button {
-    font-size: em(14, 10);
-    font-weight: bold;
-    padding: 10px 20px;
-    color: $darkest-neutral;
-    border: none;
-    outline: none;
-    border-radius: 8px;
-    cursor: pointer;
-    background-color: $lightest-neutral;
-    transition: background-color .2s ease;
+  font-size: em(14, 10);
+  font-weight: bold;
+  padding: 10px 20px;
+  color: $darkest-neutral;
+  border: none;
+  outline: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: $lightest-neutral;
+  transition: background-color 0.2s ease;
 
-    &:hover {
-        background-color: #e0e0e0;
-    }
+  &:hover {
+    background-color: #e0e0e0;
+  }
 }
 
 .text-cursive {
-    font-family: $secondary-font-stack;
+  font-family: $secondary-font-stack;
 }
 
 .fa-icon {
-    font-size: rem(20);
+  font-size: rem(20);
 }
 
 /* Loading State */
 .loader-container {
-    position: fixed;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: $lightest-neutral;
+  width: 188px;
+  height: 188px;
+  border-radius: 8px;
+  z-index: 998;
+
+  .loader {
+    position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: rgba(153, 223, 62, 0.644);
-    width: 288px;
-    height: 288px;
-    border-radius: 50%;
-    z-index: 998;
+    transform: translate(-50%, -40%);
 
-    .loadbar {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 50%;
-        height: 50%;
-        border: 8px solid rgb(255, 255, 255);
-        border-radius: 50%;
-        border-top-color: green;
-        animation: spin 1s ease-in-out infinite;
-        -webkit-animation: spin 1s ease-in-out infinite;
+    &__text {
+      margin: 5px auto;
+      color: $loading;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
+
+    &__filmstrip {
+      position: relative;
+      width: 56px;
+      height: 70px;
+      margin: 0 auto;
+      background: $loading;
+      z-index: -1;
+
+      &:before,
+      &:after {
+        content: '';
+        position: absolute;
+        height: 120%;
+        border-left: 5px dashed $lightest-neutral;
+        animation: roll 20ms infinite;
+      }
+
+      &:before {
+        left: 5px;
+      }
+
+      &:after {
+        right: 5px;
+      }
+    }
+  }
 }
 
 // Pagination styles
 .pagination {
-    justify-content: center;
-    
-    li svg {
-        opacity: 0.5;
-        transform: scale(1.5);
-    }
-    
-    li button {
-        color: $lightest-neutral;
-        font-size: rem(16);
-        border: 1px solid transparent;
-    }
+  justify-content: center;
 
-    .Control-active {
-        opacity: 1;
-        fill: $lightest-neutral;
+  li svg {
+    opacity: 0.5;
+    transform: scale(1.5);
+  }
 
-        &:hover {
-            fill: $grey;
-        }
+  li button {
+    color: $lightest-neutral;
+    font-size: rem(16);
+    border: 1px solid transparent;
+  }
+
+  .Control-active {
+    opacity: 1;
+    fill: $lightest-neutral;
+
+    &:hover {
+      fill: $grey;
     }
-    
-    .Page-active {
-        color: $darkest-neutral;
-    }
+  }
+
+  .Page-active {
+    color: $darkest-neutral;
+  }
 }
 
 // Toast message styles
 .notifications {
-    width: fit-content !important;
+  width: fit-content !important;
 
-    .notification-title {
-        @include font-size(30, 700, none, -1, 35);
-        white-space: nowrap;
-    }
+  .notification-title {
+    @include font-size(30, 700, none, -1, 35);
+    white-space: nowrap;
+  }
 
-    .notification-content {
-        @include font-size(20, 700, none, -1, 35);
-    }
+  .notification-content {
+    @include font-size(20, 700, none, -1, 35);
+  }
 }
 
 // Carousel pagination & navigation styles
 button.carousel__next,
 button.carousel__prev {
-    height: 50%;
-    width: 50px;
-    margin-right: 0;
-    transition: all 0.2s ease;
-    
-    &:hover {
-        background-color: rgba($darkest-neutral, 0.5);
+  height: 50%;
+  width: 50px;
+  margin-right: 0;
+  transition: all 0.2s ease;
 
-        svg {
-            transition: all 0.2s ease;
-            transform: scale(1.7);
-        }
-    }
+  &:hover {
+    background-color: rgba($darkest-neutral, 0.5);
 
     svg {
-        fill: $lightest-neutral;
-        transform: scale(1.5);
+      transition: all 0.2s ease;
+      transform: scale(1.7);
     }
+  }
+
+  svg {
+    fill: $lightest-neutral;
+    transform: scale(1.5);
+  }
 }
 
 .carousel__pagination {
-    &-item button::after {
-        background-color: $light-grey;
-    }
+  &-item button::after {
+    background-color: $light-grey;
+  }
 }
