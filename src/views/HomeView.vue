@@ -139,7 +139,7 @@ getShows('top_rated', 'topRated')
   <div class="home">
     <div v-if="isLoading" class="loader-container">
       <div class="loader">
-        <div class="loader__filmstrip"></div>
+        <div class="loader__filmstrip" />
         <p class="loader__text">loading</p>
       </div>
     </div>
@@ -206,7 +206,7 @@ getShows('top_rated', 'topRated')
         <Slide v-for="slide in shows.nowPlaying.length" :key="slide">
           <p class="category-tag">Now Playing</p>
           <img
-            v-if="shows.nowPlaying[slide - 1].poster_path"
+            v-if="shows.nowPlaying[slide - 1].backdrop_path"
             :src="`http://image.tmdb.org/t/p/${posterSize}${
               shows.nowPlaying[slide - 1].backdrop_path
             }`"
@@ -465,6 +465,7 @@ getShows('top_rated', 'topRated')
     #thumbnails {
       img {
         width: 50vw;
+        height: 100%;
         cursor: pointer;
 
         @include bp-custom-min(400) {
@@ -489,12 +490,16 @@ getShows('top_rated', 'topRated')
 
     .view-all {
       font-size: rem(20);
-      font-weight: bold;
+      font-weight: 300;
       position: absolute;
-      top: 0;
+      top: -10px;
       right: 25px;
       cursor: pointer;
       text-transform: uppercase;
+
+      svg {
+        margin-bottom: -1px;
+      }
 
       &:hover {
         svg {

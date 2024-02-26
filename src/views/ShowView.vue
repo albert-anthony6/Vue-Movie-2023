@@ -88,7 +88,7 @@ getShow()
   <div class="show-view page-bg">
     <div v-if="isLoading" class="loader-container">
       <div class="loader">
-        <div class="loader__filmstrip"></div>
+        <div class="loader__filmstrip" />
         <p class="loader__text">loading</p>
       </div>
     </div>
@@ -273,7 +273,7 @@ getShow()
 
     @include bp-lg-laptop {
       font-size: rem(10);
-      max-width: 50%;
+      max-width: 45%;
     }
 
     h1 {

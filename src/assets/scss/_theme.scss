@@ -117,7 +117,7 @@ button {
       &:after {
         content: '';
         position: absolute;
-        height: 120%;
+        height: 90px;
         border-left: 5px dashed $lightest-neutral;
         animation: roll 20ms infinite;
       }

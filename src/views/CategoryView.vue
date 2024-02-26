@@ -106,7 +106,7 @@ if (route.name === 'search') {
   <div class="category-view page-bg">
     <div v-if="isLoading" class="loader-container">
       <div class="loader">
-        <div class="loader__filmstrip"></div>
+        <div class="loader__filmstrip" />
         <p class="loader__text">loading</p>
       </div>
     </div>
